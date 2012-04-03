@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>Tests</title>
+<link href="qunit.css" rel="stylesheet" type="text/css" />
+<script src="qunit.js"></script>
+<script src="../lib/jquery.js"></script>
+<script src="../src/core.js"></script>
+<script src="../src/template.js"></script>
+<script src="../src/plugin.js"></script>
+<script type="text/doTemplate" id="listTemplate">
+	<tr>
+		<td class="click">{{= it.name }}</td>
+		<td>{{= it.age }}</td>
+		<td>{{= it.age >= 18 ? 'yes' : 'no' }}</td>
+	</tr>
+</script>
+<script type="text/doTemplate" id="itemTemplate">
+	<tr>
+		<th colspan="3"><strong>{{= it.name }}</strong></th>
+	</tr>
+	<tr>
+		<th>Age</th>
+		<td colspan="2">{{= it.age }}</td>
+	</tr>
+</script>
+<body>
+<h1 id="qunit-header">Tests</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture">test markup, will be hidden</div>
+<h2>List 1</h1>
+<table>
+	<thead>
+		<tr><th>Name</th><th>Age</th><th>Adult</th></tr>
+	</thead>
+	<tbody id="list"></tbody>
+</table>
+<h2>List 2</h1>
+<table>
+	<thead>
+		<tr><th>Name</th><th>Age</th><th>Adult</th></tr>
+	</thead>
+	<tbody id="list2"></tbody>
+</table>
+<script src="tests.js"></script>
+</body>
+</html>
