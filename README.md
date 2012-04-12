@@ -24,7 +24,22 @@
 		</tr>
 	</script>
 </head>
-
+<body>
+<h1>List 1</h1>
+<table>
+	<thead>
+		<tr><th>Name</th><th>Age</th><th>Adult</th></tr>
+	</thead>
+	<tbody id="list"></tbody>
+</table>
+<h2>List 2</h1>
+<table>
+	<thead>
+		<tr><th>Name</th><th>Age</th><th>Adult</th></tr>
+	</thead>
+	<tbody id="list2"></tbody>
+</table>
+</body>
 ```
 
 ```javascript
