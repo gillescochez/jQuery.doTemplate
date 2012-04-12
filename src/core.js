@@ -53,9 +53,10 @@ $.doTemplate = (function() {
 								$item = $(compiled_src);
 								
 								$item.data('doTemplate', {
+									config: config,
 									dataObject: object
 								}).each(function() {
-									frag.appendChild($(this)[0]);
+									frag.appendChild(this);
 								});
 							};
 						
@@ -81,7 +82,7 @@ $.doTemplate = (function() {
 					// append the compiled template to the given selector
 					render: function(selector) {
 					
-						$(selector).append(this.compiled);
+						$(selector).replaceWith(this.compiled);
 						return this;
 					}
 				};
@@ -89,15 +90,19 @@ $.doTemplate = (function() {
 			
 			// create some settter function (might be worth porting to indiviual items if useful for individual updates)
 			$.each(['Data', 'Source', 'Target'], function(i, prop) {
+			
+				(function(prop, proplow) {
 
-				templates[config.name].prototype['set' + prop] = (function(prop) {
-				
-					return function(val) {
-						this[prop.toLowerCase()] = val;
+					templates[config.name].prototype['set' + prop] = function(val) {
+						this[proplow] = val;
 						return this;
 					};
+
+					templates[config.name].prototype['get' + prop] = function() {
+						return this[proplow];
+					};
 				
-				})(prop);
+				})(prop, prop.toLowerCase());
 			});
 			
 			// return a new template object
@@ -109,7 +114,7 @@ $.doTemplate = (function() {
 		// reference arguments for better compression
 		var args = arguments;
 	
-		// if no arguments we throw an error
+		// if no arguments we throw an error (we require at least an identifier)
 		if (args.length === 0) throw '$.doTemplate: required argument missing';
 		
 		// 1 argument
@@ -128,6 +133,45 @@ $.doTemplate = (function() {
 			// if we end here throw an error
 			throw '$.doTemplate: invalid argument';
 		};
+		
+		// 2 arguments
+		if (args.length === 2) {
+		
+			// name, string source
+			if (args[0].constructor == String && args[1].constructor == String) {
+				return newTemplate({
+					name: args[0],
+					source: args[1]
+				});
+			};
+		};
+		
+		// 3 arguments
+		if (args.length === 3) {
+		
+			// name, string source, data
+			if (args[0].constructor == String && args[1].constructor == String) {
+				return newTemplate({
+					name: args[0],
+					source: args[1],
+					data: args[2]
+				});
+			};
+		};
+		
+		// 3 arguments
+		if (args.length === 4) {
+		
+			// name, string source, data, target
+			if (args[0].constructor == String && args[1].constructor == String) {
+				return newTemplate({
+					name: args[0],
+					source: args[1],
+					data: args[2],
+					target: args[3]
+				});
+			};
+		};
 	
 		return {};
 	};
@@ -142,17 +186,4 @@ $.doTemplate.get = function(elem) {
 	while ( elem && elem.nodeType === 1 && !(tmplItem = jQuery.data( elem, 'doTemplate' )) && (elem = elem.parentNode) ) {}
 	return tmplItem || null;
 
-/*
-	var $e = $(e),
-		obj;
-		
-	while ($e && !(obj = $e.data('doTemplate')) && ($e = $e.parent())) {}
-	
-	while ($e && !$e.data('doTemplate')) {
-		$e = $e.parent() || null; 
-	};
-	
-	return $e.data('doTemplate') || null;
-	
-	return obj;*/
 };

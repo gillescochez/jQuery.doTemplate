@@ -9,9 +9,9 @@ test('various', function() {
 	ok($.doTemplate, 'exists');
 	
 	var templ = $('#listTemplate').doTemplate('list', data, '#list');
-	
+
 	$('td.click').live('click', function() {
-		$('#itemTemplate').doTemplate('item',  $.doTemplate.get(this).dataObject, this);
+		$('#itemTemplate').doTemplate('item',  $.doTemplate.get(this).dataObject, $(this).parent());
 	});
 
 	setTimeout(function() {
