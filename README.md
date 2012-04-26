@@ -1,5 +1,8 @@
 ## jQuery.doTemplate
 
+$.doTemplate is a jQuery template plugin build around the high performance doT template engine (see credits section). It provides similar features as the popular jquery.tmpl but aims
+to provide an API that is easier to use and more self contained.
+
 ## Usage
 
 ### Using script tags to store templates
@@ -78,7 +81,7 @@ var data = [
     {name: 'Jesus', age: 33},
 ];
 
-$.doTemplate('list', '<p>{{= it.name }}</p>', data, '#list');
+$.doTemplate('<p>{{= it.name }}</p>', data, '#list');
 	
 ```
 
