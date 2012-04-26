@@ -8,10 +8,10 @@ test('various', function() {
 
     ok($.doTemplate, 'exists');
     
-    var templ = $('#listTemplate').doTemplate('list', data, '#list');
+    var templ = $('#listTemplate').doTemplate(data, '#list');
 
     $('td.click').live('click', function() {
-        $('#itemTemplate').doTemplate('item',  $.doTemplate.get(this).dataObject, $(this).parent());
+        $('#itemTemplate').doTemplate($.doTemplate.get(this).dataObject, $(this).parent());
     });
 
     setTimeout(function() {
