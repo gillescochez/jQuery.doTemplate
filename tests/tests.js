@@ -11,12 +11,12 @@ test('various', function() {
     var templ = $('#listTemplate').doTemplate(data, '#list');
 
     $('td.click').live('click', function() {
-        $('#itemTemplate').doTemplate($.doTemplate.get(this).dataObject, $(this).parent());
+        $('#itemTemplate').doTemplate($.doTemplate.get(this).data, $(this).parent());
     });
 
     setTimeout(function() {
             
-        templ.setTarget('#list2').setData([
+        templ.prop('target', '#list2').prop('data', [
             {name: 'Paulette', age: 69},
             {name: 'Jean', age: 18},
             {name: 'Turna', age: 17}
