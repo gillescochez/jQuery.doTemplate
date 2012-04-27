@@ -105,19 +105,21 @@ var data = [
     {name: 'Jesus', age: 33},
 ];
 
-var templ = $('#listTemplate').doTemplate(data, '#list');
+ok($.doTemplate, 'exists');
+
+var templ = $('#listTemplate').doTemplate(data).appendTo('#list');
 
 $('td.click').live('click', function() {
-    $('#itemTemplate').doTemplate($.doTemplate.get(this).data, $(this).parent());
+    $('#itemTemplate').doTemplate($.doTemplate.get(this).data).replace($(this).parent());
 });
 
 setTimeout(function() {
         
-    templ.prop('target', '#list2').prop('data', [
+    templ.compile([
         {name: 'Paulette', age: 69},
         {name: 'Jean', age: 18},
         {name: 'Turna', age: 17}
-    ]).compile();
+    ]).appendTo('#list2');
 
 }, 500);
 
@@ -133,7 +135,7 @@ var data = [
     {name: 'Jesus', age: 33},
 ];
 
-$.doTemplate('<p>{{= it.name }}</p>', data, '#list');
+$.doTemplate('<p>{{= it.name }}</p>', data).appendTo('#list');
 	
 ```
 
