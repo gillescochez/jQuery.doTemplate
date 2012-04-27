@@ -1,9 +1,9 @@
 $.doTemplate = (function() {
 
-    var errPre = '$.doTemplate: ',
-        err = function(message) {
+    // error reporting function
+    var err = function(message) {
 
-            var msg = errPre + message;
+            var msg = '$.doTemplate: ' + message;
 
             if (window.console && console.log) {
                 if (console.error) console.error(msg);
@@ -12,37 +12,24 @@ $.doTemplate = (function() {
         },
                 
         // template object constructor
-        t = function(config) {
+        t = function doTemplate(config) {
 
-        this.source = config.source;
-        this.data = config.data;
-        this.target = config.target;
-        
-        if (this.data) this.compile(config.data);
-        if (this.target && this.compiled) this.render(this.target);
-        
-        return this;
-    };
+            this.source = config.source;
+            this.data = config.data;
+            
+            if (this.data) this.compile(config.data);
+            
+            return this;
+        };
             
     // add some inherited methods
-    t.prototype = {
-
-        prop: function(prop, value) {
-
-            if (!this[prop]) err('Invalid config parameter');
-            else {
-                if (value) this[prop] = value;
-                else return this[prop];
-            };
-
-            return this;
-        },
+    $.extend(t.prototype, {
 
         // compile data using the compiler
         compile: function(data) {
         
             var frag = document.createDocumentFragment(),
-                compiler = $.doTemplate.template(this.source),
+                compiler = $.doTemplate.engine(this.source),
                 compiled_src, $item,
                 add = function(i, object) {
                 
@@ -73,19 +60,34 @@ $.doTemplate = (function() {
             // store compiled version
             this.compiled = frag;
             
-            // if a target is set update it
-            if (this.target) this.render(this.target);
-            
             return this;
         },
+
+        appendTo: function(selector) {
+            return this.render(selector, 'append');
+        },
+ 
+        prependTo: function(selector) {
+            return this.render(selector, 'prepend');
+        },
         
-        // append the compiled template to the given selector
-        render: function(selector) {
-        
-            $(selector).replaceWith(this.compiled);
+        insertBefore: function(selector) {
+            return this.render(selector, 'before');
+        },
+ 
+        insertAfter: function(selector) {
+            return this.render(selector, 'after');
+        },
+
+        replace: function(selector) {
+            return this.render(selector, 'replaceWith');
+        },
+
+        render: function(selector, type) {
+            $(selector)[type](this.compiled);
             return this;
         }
-    };
+    });
 		
     return function() {
     

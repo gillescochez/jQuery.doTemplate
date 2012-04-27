@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<title>Bemchmarks</title>
+<script src="../lib/jquery.js"></script>
+<script src="../dist/$.doTemplate.min.js"></script>
+<script src="jquery.tmpl.js"></script>
+<script type="text/doTemplate" id="listTemplate">
+    <tr>
+        <td class="click">{{= it.name }}</td>
+        <td>{{= it.age }}</td>
+        <td>{{= it.age >= 18 ? 'yes' : 'no' }}</td>
+    </tr>
+</script>
+<script type="text/doTemplate" id="itemTemplate">
+    <tr>
+        <th colspan="3"><strong>{{= it.name }}</strong></th>
+    </tr>
+    <tr>
+        <th>Age</th>
+        <td colspan="2">{{= it.age }}</td>
+    </tr>
+</script>
+<body>
+<script src="tests.js"></script>
+</body>
+</html>

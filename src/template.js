@@ -1,5 +1,5 @@
 // original code from doT.js - 2011, Laura Doktorova https://github.com/olado/doT
-$.doTemplate.templateEngine = (function() {
+$.doTemplate.engine = (function() {
 
     var resolveDefs = function(c, block, def) {
 
@@ -22,43 +22,40 @@ $.doTemplate.templateEngine = (function() {
 	        });
         };
 
-    return {
+    return function(tmpl, c, def) {
 
-        create: function(tmpl, c, def) {
+        c = $.extend($.doTemplate.settings, c, true);
 
-            c = $.extend($.doTemplate.templateEngine.settings, c, true);
+        var cstart = c.append ? "'+(" : "';out+=(",
+            cend   = c.append ? ")+'" : ");out+='",
+            str = (c.use || c.define) ? resolveDefs(c, tmpl, def || {}) : tmpl;
 
-            var cstart = c.append ? "'+(" : "';out+=(",
-                cend   = c.append ? ")+'" : ");out+='",
-                str = (c.use || c.define) ? resolveDefs(c, tmpl, def || {}) : tmpl;
-    
-            str = (
-                    "var out='" + ((c.strip) ? str.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]|(\/\*[\s\S]*?\*\/)/g, ''): str)
-                    .replace(/\\/g, '\\\\')
-                    .replace(/'/g, "\\'")
-                    .replace(c.interpolate, function(match, code) {
-                            return cstart + code.replace(/\\'/g, "'").replace(/\\\\/g,"\\").replace(/[\r\t\n]/g, ' ') + cend;
-                    })
-                    .replace(c.encode, function(match, code) {
-                            return cstart + code.replace(/\\'/g, "'").replace(/\\\\/g, "\\").replace(/[\r\t\n]/g, ' ') + ").toString().replace(/&(?!\\w+;)/g, '&#38;').split('<').join('&#60;').split('>').join('&#62;').split('" + '"' + "').join('&#34;').split(" + '"' + "'" + '"' + ").join('&#39;').split('/').join('&#47;'" + cend;
-                    })
-                    .replace(c.evaluate, function(match, code) {
-                            return "';" + code.replace(/\\'/g, "'").replace(/\\\\/g,"\\").replace(/[\r\t\n]/g, ' ') + "out+='";
-                    })
-                    + "';return out;"
-            )
-            .replace(/\n/g, '\\n')
-            .replace(/\t/g, '\\t')
-            .replace(/\r/g, '\\r')
-            .split("out+='';").join('')
-            .split("var out='';out+=").join('var out=');
-    
-            try { return new Function(c.varname, str); } catch (e) { throw e; }
-        }
+        str = (
+                "var out='" + ((c.strip) ? str.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]|(\/\*[\s\S]*?\*\/)/g, ''): str)
+                .replace(/\\/g, '\\\\')
+                .replace(/'/g, "\\'")
+                .replace(c.interpolate, function(match, code) {
+                        return cstart + code.replace(/\\'/g, "'").replace(/\\\\/g,"\\").replace(/[\r\t\n]/g, ' ') + cend;
+                })
+                .replace(c.encode, function(match, code) {
+                        return cstart + code.replace(/\\'/g, "'").replace(/\\\\/g, "\\").replace(/[\r\t\n]/g, ' ') + ").toString().replace(/&(?!\\w+;)/g, '&#38;').split('<').join('&#60;').split('>').join('&#62;').split('" + '"' + "').join('&#34;').split(" + '"' + "'" + '"' + ").join('&#39;').split('/').join('&#47;'" + cend;
+                })
+                .replace(c.evaluate, function(match, code) {
+                        return "';" + code.replace(/\\'/g, "'").replace(/\\\\/g,"\\").replace(/[\r\t\n]/g, ' ') + "out+='";
+                })
+                + "';return out;"
+        )
+        .replace(/\n/g, '\\n')
+        .replace(/\t/g, '\\t')
+        .replace(/\r/g, '\\r')
+        .split("out+='';").join('')
+        .split("var out='';out+=").join('var out=');
+
+        try { return new Function(c.varname, str); } catch (e) { throw e; }
     };
 })();
 
-$.doTemplate.templateEngine.settings = {
+$.doTemplate.settings = {
     evaluate: /\{\{([\s\S]+?)\}\}/g,
     interpolate: /\{\{=([\s\S]+?)\}\}/g,
     encode: /\{\{!([\s\S]+?)\}\}/g,
@@ -68,5 +65,3 @@ $.doTemplate.templateEngine.settings = {
     strip : true,
     append: true
 };
-
-$.doTemplate.template = $.doTemplate.templateEngine.create;

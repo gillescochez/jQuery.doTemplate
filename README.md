@@ -1,7 +1,59 @@
 ## jQuery.doTemplate
 
 $.doTemplate is a jQuery template plugin build around the high performance doT template engine (see credits section). It provides similar features as the popular jquery.tmpl but aims
-to provide an API that is easier to use and more self contained.
+to provide an API that is easier to use. Also it doesn't store templates for you, but as each template is an object that can be reuse you can easily cache them. That decision was made
+to unify the API as you can see below
+
+## Template builder API
+
+### $.doTemplate();
+
+The core function that serve new template object based on the source string and data provided.
+
+examples
+
+    $.doTemplate('<p>{{= $it.name }}</p>', [{name:'John'},{name:'Jack'}]).appendTo('#names');
+
+    or
+
+    $.doTemplate({
+        data: [{name:'John'},{name:'Jack'}],
+        source: '<p>{{= $it.name }}</p>',
+        complete: function() {
+            this.appendTo('#names');
+        }
+    });
+
+
+### $().doTemplate();
+
+This is an helper function which return a template object created using the element contents
+
+examples
+
+    $('#template').doTemplate([{name:'John'},{name:'Jack'}]).appendTo('#names');
+
+    or
+
+    $('#template').doTemplate({
+        data: [{name:'John'},{name:'Jack'}],
+        complete: function() {
+            this.appendTo('#names');
+        }
+    });
+
+## Template object API
+
+The template builder methods return a template object. That object has an API to simplify the rendering of compiled
+content in the document.
+
+### rendering methods
+
+appendTo, prependTo, insertAfter, insertBefore and replace can be used to insert the compiled source into the DOM
+
+### compiling new data
+
+example tmpl.compile([Data Onject]).appendTo('#target');
 
 ## Usage
 

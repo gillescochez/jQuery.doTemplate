@@ -4,10 +4,10 @@
 
 $.doTemplate = (function() {
 
-    var errPre = '$.doTemplate: ',
-        err = function(message) {
+    // error reporting function
+    var err = function(message) {
 
-            var msg = errPre + message;
+            var msg = '$.doTemplate: ' + message;
 
             if (window.console && console.log) {
                 if (console.error) console.error(msg);
@@ -16,37 +16,24 @@ $.doTemplate = (function() {
         },
                 
         // template object constructor
-        t = function(config) {
+        t = function doTemplate(config) {
 
-        this.source = config.source;
-        this.data = config.data;
-        this.target = config.target;
-        
-        if (this.data) this.compile(config.data);
-        if (this.target && this.compiled) this.render(this.target);
-        
-        return this;
-    };
+            this.source = config.source;
+            this.data = config.data;
+            
+            if (this.data) this.compile(config.data);
+            
+            return this;
+        };
             
     // add some inherited methods
-    t.prototype = {
-
-        prop: function(prop, value) {
-
-            if (!this[prop]) err('Invalid config parameter');
-            else {
-                if (value) this[prop] = value;
-                else return this[prop];
-            };
-
-            return this;
-        },
+    $.extend(t.prototype, {
 
         // compile data using the compiler
         compile: function(data) {
         
             var frag = document.createDocumentFragment(),
-                compiler = $.doTemplate.template(this.source),
+                compiler = $.doTemplate.engine(this.source),
                 compiled_src, $item,
                 add = function(i, object) {
                 
@@ -77,19 +64,34 @@ $.doTemplate = (function() {
             // store compiled version
             this.compiled = frag;
             
-            // if a target is set update it
-            if (this.target) this.render(this.target);
-            
             return this;
         },
+
+        appendTo: function(selector) {
+            return this.render(selector, 'append');
+        },
+ 
+        prependTo: function(selector) {
+            return this.render(selector, 'prepend');
+        },
         
-        // append the compiled template to the given selector
-        render: function(selector) {
-        
-            $(selector).replaceWith(this.compiled);
+        insertBefore: function(selector) {
+            return this.render(selector, 'before');
+        },
+ 
+        insertAfter: function(selector) {
+            return this.render(selector, 'after');
+        },
+
+        replace: function(selector) {
+            return this.render(selector, 'replaceWith');
+        },
+
+        render: function(selector, type) {
+            $(selector)[type](this.compiled);
             return this;
         }
-    };
+    });
 		
     return function() {
     
@@ -158,7 +160,7 @@ $.doTemplate.get = function(elem) {
 };
 
 // original code from doT.js - 2011, Laura Doktorova https://github.com/olado/doT
-$.doTemplate.templateEngine = (function() {
+$.doTemplate.engine = (function() {
 
     var resolveDefs = function(c, block, def) {
 
@@ -181,43 +183,40 @@ $.doTemplate.templateEngine = (function() {
 	        });
         };
 
-    return {
+    return function(tmpl, c, def) {
 
-        create: function(tmpl, c, def) {
+        c = $.extend($.doTemplate.settings, c, true);
 
-            c = $.extend($.doTemplate.templateEngine.settings, c, true);
+        var cstart = c.append ? "'+(" : "';out+=(",
+            cend   = c.append ? ")+'" : ");out+='",
+            str = (c.use || c.define) ? resolveDefs(c, tmpl, def || {}) : tmpl;
 
-            var cstart = c.append ? "'+(" : "';out+=(",
-                cend   = c.append ? ")+'" : ");out+='",
-                str = (c.use || c.define) ? resolveDefs(c, tmpl, def || {}) : tmpl;
-    
-            str = (
-                    "var out='" + ((c.strip) ? str.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]|(\/\*[\s\S]*?\*\/)/g, ''): str)
-                    .replace(/\\/g, '\\\\')
-                    .replace(/'/g, "\\'")
-                    .replace(c.interpolate, function(match, code) {
-                            return cstart + code.replace(/\\'/g, "'").replace(/\\\\/g,"\\").replace(/[\r\t\n]/g, ' ') + cend;
-                    })
-                    .replace(c.encode, function(match, code) {
-                            return cstart + code.replace(/\\'/g, "'").replace(/\\\\/g, "\\").replace(/[\r\t\n]/g, ' ') + ").toString().replace(/&(?!\\w+;)/g, '&#38;').split('<').join('&#60;').split('>').join('&#62;').split('" + '"' + "').join('&#34;').split(" + '"' + "'" + '"' + ").join('&#39;').split('/').join('&#47;'" + cend;
-                    })
-                    .replace(c.evaluate, function(match, code) {
-                            return "';" + code.replace(/\\'/g, "'").replace(/\\\\/g,"\\").replace(/[\r\t\n]/g, ' ') + "out+='";
-                    })
-                    + "';return out;"
-            )
-            .replace(/\n/g, '\\n')
-            .replace(/\t/g, '\\t')
-            .replace(/\r/g, '\\r')
-            .split("out+='';").join('')
-            .split("var out='';out+=").join('var out=');
-    
-            try { return new Function(c.varname, str); } catch (e) { throw e; }
-        }
+        str = (
+                "var out='" + ((c.strip) ? str.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]|(\/\*[\s\S]*?\*\/)/g, ''): str)
+                .replace(/\\/g, '\\\\')
+                .replace(/'/g, "\\'")
+                .replace(c.interpolate, function(match, code) {
+                        return cstart + code.replace(/\\'/g, "'").replace(/\\\\/g,"\\").replace(/[\r\t\n]/g, ' ') + cend;
+                })
+                .replace(c.encode, function(match, code) {
+                        return cstart + code.replace(/\\'/g, "'").replace(/\\\\/g, "\\").replace(/[\r\t\n]/g, ' ') + ").toString().replace(/&(?!\\w+;)/g, '&#38;').split('<').join('&#60;').split('>').join('&#62;').split('" + '"' + "').join('&#34;').split(" + '"' + "'" + '"' + ").join('&#39;').split('/').join('&#47;'" + cend;
+                })
+                .replace(c.evaluate, function(match, code) {
+                        return "';" + code.replace(/\\'/g, "'").replace(/\\\\/g,"\\").replace(/[\r\t\n]/g, ' ') + "out+='";
+                })
+                + "';return out;"
+        )
+        .replace(/\n/g, '\\n')
+        .replace(/\t/g, '\\t')
+        .replace(/\r/g, '\\r')
+        .split("out+='';").join('')
+        .split("var out='';out+=").join('var out=');
+
+        try { return new Function(c.varname, str); } catch (e) { throw e; }
     };
 })();
 
-$.doTemplate.templateEngine.settings = {
+$.doTemplate.settings = {
     evaluate: /\{\{([\s\S]+?)\}\}/g,
     interpolate: /\{\{=([\s\S]+?)\}\}/g,
     encode: /\{\{!([\s\S]+?)\}\}/g,
@@ -227,8 +226,6 @@ $.doTemplate.templateEngine.settings = {
     strip : true,
     append: true
 };
-
-$.doTemplate.template = $.doTemplate.templateEngine.create;
 
 $.fn.doTemplate = function(data, target) {
 
