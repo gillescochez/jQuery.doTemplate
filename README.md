@@ -105,8 +105,6 @@ var data = [
     {name: 'Jesus', age: 33},
 ];
 
-ok($.doTemplate, 'exists');
-
 var templ = $('#listTemplate').doTemplate(data).appendTo('#list');
 
 $('td.click').live('click', function() {
