@@ -11,7 +11,7 @@ test('various', function() {
     var templ = $('#listTemplate').doTemplate(data).appendTo('#list');
 
     $('td.click').live('click', function() {
-        $('#itemTemplate').doTemplate($.doTemplate.get(this).data).replace($(this).parent());
+        $('#itemTemplate').doTemplate(this).replace($(this).parent());
     });
 
     setTimeout(function() {

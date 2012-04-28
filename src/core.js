@@ -92,13 +92,25 @@ $.doTemplate = (function() {
     return function() {
     
         // reference arguments for better compression
-        var args = arguments;
+        var args = arguments,
+            obj;
 
         // if no arguments we throw an error (we require at least an identifier)
         if (args.length === 0) err('required argument missing');
         
         // 1 argument
         if (args.length === 1) {
+
+            // if argument is jquery object or an element we use get to return a new template object
+            if (args[0] instanceof jQuery || args[0].nodeType) {
+
+                obj = $.doTemplate.__(args[0]);
+
+                return new t({
+                    source: obj.source,
+                    data: obj.data
+                });
+            };
         
             // if String we assume template source
             if (args[0].constructor == String) {
@@ -118,11 +130,24 @@ $.doTemplate = (function() {
         if (args.length === 2) {
         
             // string source, data
-            if (args[0].constructor == String && args[1].constructor == Object) {
-                return new t({
-                    source: args[0],
-                    data: args[1]
-                });
+            if (args[0].constructor == String) {
+
+                if (args[1] instanceof jQuery || args[1].nodeType) {
+
+                    obj = $.doTemplate._(args[1]);
+
+                    return new t({
+                        source: args[0],
+                        data: obj.data
+                    });
+
+                } else if(args[1].constructor == Object) {
+
+                    return new t({
+                        source: args[0],
+                        data: args[1]
+                    });
+                };
             };
         };
         
@@ -145,7 +170,7 @@ $.doTemplate = (function() {
 
 })();
 
-$.doTemplate.get = function(elem) {
+$.doTemplate._ = function(elem) {
 
     var tmplItem;
 

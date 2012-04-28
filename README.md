@@ -8,16 +8,18 @@ to unify the API as you can see below
 
 ### $.doTemplate();
 
-The core function that serve new template object based on the source string and data provided.
+The core function that serve new template object based on arguments provided.
 
 examples
 
 ```javascript
 
+    // pass source and data as arguments
     $.doTemplate('<p>{{= $it.name }}</p>', [{name:'John'},{name:'Jack'}]).appendTo('#names');
 
     // or
 
+    // pass a configuration object
     $.doTemplate({
         data: [{name:'John'},{name:'Jack'}],
         source: '<p>{{= $it.name }}</p>',
@@ -25,6 +27,14 @@ examples
             this.appendTo('#names');
         }
     });
+
+    // or if you want a template object based of the template object used to render an element
+
+    $.doTemplate(element);
+
+    // if a source is passed first it will be used instead of the original template
+    $.doTemplate('<div>{{= $it.name }}</div>', element);
+
 
 ```
 
@@ -37,16 +47,22 @@ examples
 
 ```javascript
 
+    
+    // passing data as argument
     $('#template').doTemplate([{name:'John'},{name:'Jack'}]).appendTo('#names');
 
     // or
 
+    // passing a confi object
     $('#template').doTemplate({
         data: [{name:'John'},{name:'Jack'}],
         complete: function() {
             this.appendTo('#names');
         }
     });
+
+    // or to create a new template using the element source as new source
+    $('#template2').doTemplate(element);
 
 ```
 
@@ -116,7 +132,7 @@ var data = [
 var templ = $('#listTemplate').doTemplate(data).appendTo('#list');
 
 $('td.click').live('click', function() {
-    $('#itemTemplate').doTemplate($.doTemplate.get(this).data).replace($(this).parent());
+    $('#itemTemplate').doTemplate(this).replace($(this).parent());
 });
 
 setTimeout(function() {
