@@ -1,6 +1,6 @@
 /*! github.com/gillescochez/$.doTemplate */
 
-(function(){
+(function($){
 
 $.doTemplate = (function() {
 
@@ -234,8 +234,7 @@ $.doTemplate.settings = {
     use: /\{\{#([\s\S]+?)\}\}/g, //compile time evaluation
     define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g, //compile time defs
     varname: 'it',
-    strip : true,
-    append: true
+    strip : true
 };
 
 $.fn.doTemplate = function(data, callback) {
@@ -258,4 +257,4 @@ $.fn.doTemplate = function(data, callback) {
     });
 };
 
-})();
+})(jQuery);

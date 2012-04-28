@@ -1,8 +1,26 @@
 ## jQuery.doTemplate
 
-$.doTemplate is a jQuery template plugin build around the high performance doT template engine, which explains the name. It provides similar features as the popular jquery.tmpl but aims
-to provide an API that is easier to use. Also it doesn't store templates for you, but as each template is an object that can be reuse you can easily cache them. That decision was made
-to unify the API as you can see below
+$.doTemplate is a jQuery template plugin build around the high performance doT template engine, which explains the name. 
+
+It provides similar features as the popular jquery.tmpl but aims to provide an API that is easier to use. Also it doesn't store templates for you, 
+but as each template is an object you can easily cache them and reuse them.
+
+Based on the small amount of benchmark made so far, using benchmark.js, jquery.doTemplate is faster than jQuery.tmpl
+
+### Template engine features (doT)
+
+* custom delimiters
+* runtime evaluation
+* runtime interpolation
+* compile-time evaluation
+* partials support
+* encoding
+* conditionals
+* array iteration
+* control whitespace - strip or preserve
+* streaming friendly
+
+view the [doT examples](https://github.com/olado/doT/tree/master/examples) to see advanced template scripts
 
 ## Template builder API
 
@@ -15,14 +33,14 @@ examples
 ```javascript
 
     // pass source and data as arguments
-    $.doTemplate('<p>{{= $it.name }}</p>', [{name:'John'},{name:'Jack'}]).appendTo('#names');
+    $.doTemplate('<p>{{= it.name }}</p>', [{name:'John'},{name:'Jack'}]).appendTo('#names');
 
     // or
 
     // pass a configuration object
     $.doTemplate({
         data: [{name:'John'},{name:'Jack'}],
-        source: '<p>{{= $it.name }}</p>',
+        source: '<p>{{= it.name }}</p>',
     })
     .appendTo('#names');
 
@@ -31,7 +49,7 @@ examples
     $.doTemplate(element);
 
     // if a source is passed first it will be used instead of the original template
-    $.doTemplate('<div>{{= $it.name }}</div>', element).appendTo('#itemId');
+    $.doTemplate('<div>{{= it.name }}</div>', element).appendTo('#itemId');
 
 
 ```
@@ -145,7 +163,7 @@ var data = [
     {name: 'Jesus', age: 33},
 ];
 
-$.doTemplate('<p>{{= it.name }}</p>', data).appendTo('#list');
+$.doTemplate('<p>{{= it.name }} : {{= it.age }}</p>', data).appendTo('#list');
 	
 ```
 
