@@ -16,7 +16,9 @@ $.doTemplate = (function() {
 
             this.source = config.source;
             this.data = config.data;
-            
+
+            this.compiled = null;
+
             if (this.data) this.compile(config.data);
             
             return this;
@@ -58,7 +60,7 @@ $.doTemplate = (function() {
             $.each(data, add);
             
             // store compiled version
-            this.compiled = frag;
+            this.compiled = $(frag);
             
             return this;
         },
@@ -84,7 +86,9 @@ $.doTemplate = (function() {
         },
 
         render: function(selector, type) {
-            $(selector)[type](this.compiled);
+
+            // we insert a clone, inc data,  so the same compiled template can be inserted multiple time
+            $(selector)[type](this.compiled.clone(true));
             return this;
         }
     });
@@ -172,10 +176,10 @@ $.doTemplate = (function() {
 
 $.doTemplate._ = function(elem) {
 
-    var tmplItem;
+    var obj;
 
-    if ( elem instanceof jQuery ) elem = elem[0];
-    while ( elem && elem.nodeType === 1 && !(tmplItem = jQuery.data(elem, 'doTemplate')) && (elem = elem.parentNode) ) {};
-    return tmplItem || null;
+    if (elem instanceof jQuery) elem = elem[0];
+    while (elem && elem.nodeType === 1 && !(obj = jQuery.data(elem, 'doTemplate')) && (elem = elem.parentNode)) {};
+    return obj || null;
 
 };

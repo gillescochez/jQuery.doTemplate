@@ -1,6 +1,6 @@
 ## jQuery.doTemplate
 
-$.doTemplate is a jQuery template plugin build around the high performance doT template engine (see credits section). It provides similar features as the popular jquery.tmpl but aims
+$.doTemplate is a jQuery template plugin build around the high performance doT template engine, which explains the name. It provides similar features as the popular jquery.tmpl but aims
 to provide an API that is easier to use. Also it doesn't store templates for you, but as each template is an object that can be reuse you can easily cache them. That decision was made
 to unify the API as you can see below
 
@@ -23,17 +23,15 @@ examples
     $.doTemplate({
         data: [{name:'John'},{name:'Jack'}],
         source: '<p>{{= $it.name }}</p>',
-        complete: function() {
-            this.appendTo('#names');
-        }
-    });
+    })
+    .appendTo('#names');
 
     // or if you want a template object based of the template object used to render an element
 
     $.doTemplate(element);
 
     // if a source is passed first it will be used instead of the original template
-    $.doTemplate('<div>{{= $it.name }}</div>', element);
+    $.doTemplate('<div>{{= $it.name }}</div>', element).appendTo('#itemId');
 
 
 ```
@@ -50,16 +48,6 @@ examples
     
     // passing data as argument
     $('#template').doTemplate([{name:'John'},{name:'Jack'}]).appendTo('#names');
-
-    // or
-
-    // passing a confi object
-    $('#template').doTemplate({
-        data: [{name:'John'},{name:'Jack'}],
-        complete: function() {
-            this.appendTo('#names');
-        }
-    });
 
     // or to create a new template using the element source as new source
     $('#template2').doTemplate(element);
