@@ -4,29 +4,17 @@
 
 $.doTemplate = (function() {
 
-    // error reporting function
-    var err = function(message) {
+    // template object constructor
+    var t = function doTemplate(config) {
 
-            var msg = '$.doTemplate: ' + message;
+        this.source = config.source;
+        this.data = config.data;
 
-            if (window.console && console.log) {
-                if (console.error) console.error(msg);
-                else console.log(msg);
-            } else throw msg;
-        },
-                
-        // template object constructor
-        t = function doTemplate(config) {
-
-            this.source = config.source;
-            this.data = config.data;
-
-            this.compiled = null;
-
-            if (this.data) this.compile(config.data);
-            
-            return this;
-        };
+        if (this.data) this.compile(config.data);
+        else this.compiled = null;
+        
+        return this;
+    };
             
     // add some inherited methods
     $.extend(t.prototype, {
@@ -63,7 +51,7 @@ $.doTemplate = (function() {
             // loop through data and add new item
             $.each(data, add);
             
-            // store compiled version
+            // store compiled version as jQuery object (so we can clone it on render)
             this.compiled = $(frag);
             
             return this;
@@ -103,8 +91,8 @@ $.doTemplate = (function() {
         var args = arguments,
             obj;
 
-        // if no arguments we throw an error (we require at least an identifier)
-        if (args.length === 0) err('required argument missing');
+        // if no arguments we return an blank template object
+        if (args.length === 0) return new t();
         
         // 1 argument
         if (args.length === 1) {
@@ -129,9 +117,6 @@ $.doTemplate = (function() {
             
             // if Object we crete a new template object
             if (args[0].constructor == Object) return new t(args[0]);
-            
-            // if we end here throw an error
-            err('invalid argument');
         };
                     
         // 2 arguments
@@ -171,9 +156,6 @@ $.doTemplate = (function() {
                 });
             };
         };
-
-        // if we end here return null so we can see it failed
-        err('Invalid request');
     };
 
 })();
@@ -193,24 +175,24 @@ $.doTemplate.engine = (function() {
 
     var resolveDefs = function(c, block, def) {
 
-		return ((typeof block === 'string') ? block : block.toString()).replace(c.define, function (match, code, assign, value) {
+        return ((typeof block === 'string') ? block : block.toString()).replace(c.define, function (match, code, assign, value) {
 
-                    if (code.indexOf('def.') === 0) code = code.substring(4);
+            if (code.indexOf('def.') === 0) code = code.substring(4);
 
-                    if (!(code in def)) {
-                        if (assign === ':') def[code]= value;
-                        else eval("def[code]=" + value);
-                    };
+            if (!(code in def)) {
+                if (assign === ':') def[code]= value;
+                else eval("def[code]=" + value);
+            };
 
-                    return '';
-			
-		}).replace(c.use, function(match, code) {
+            return '';
+                
+        }).replace(c.use, function(match, code) {
 
-                    var v = eval(code);
-                    return v ? resolveDefs(c, v, def) : v;
+            var v = eval(code);
+            return v ? resolveDefs(c, v, def) : v;
 
-	        });
-        };
+        });
+    };
 
     return function(tmpl, c, def) {
 

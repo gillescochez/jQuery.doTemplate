@@ -3,24 +3,24 @@ $.doTemplate.engine = (function() {
 
     var resolveDefs = function(c, block, def) {
 
-		return ((typeof block === 'string') ? block : block.toString()).replace(c.define, function (match, code, assign, value) {
+        return ((typeof block === 'string') ? block : block.toString()).replace(c.define, function (match, code, assign, value) {
 
-                    if (code.indexOf('def.') === 0) code = code.substring(4);
+            if (code.indexOf('def.') === 0) code = code.substring(4);
 
-                    if (!(code in def)) {
-                        if (assign === ':') def[code]= value;
-                        else eval("def[code]=" + value);
-                    };
+            if (!(code in def)) {
+                if (assign === ':') def[code]= value;
+                else eval("def[code]=" + value);
+            };
 
-                    return '';
-			
-		}).replace(c.use, function(match, code) {
+            return '';
+                
+        }).replace(c.use, function(match, code) {
 
-                    var v = eval(code);
-                    return v ? resolveDefs(c, v, def) : v;
+            var v = eval(code);
+            return v ? resolveDefs(c, v, def) : v;
 
-	        });
-        };
+        });
+    };
 
     return function(tmpl, c, def) {
 
