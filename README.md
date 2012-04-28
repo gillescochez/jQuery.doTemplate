@@ -12,9 +12,11 @@ The core function that serve new template object based on the source string and 
 
 examples
 
+```javascript
+
     $.doTemplate('<p>{{= $it.name }}</p>', [{name:'John'},{name:'Jack'}]).appendTo('#names');
 
-    or
+    // or
 
     $.doTemplate({
         data: [{name:'John'},{name:'Jack'}],
@@ -24,6 +26,8 @@ examples
         }
     });
 
+```
+
 
 ### $().doTemplate();
 
@@ -31,9 +35,11 @@ This is an helper function which return a template object created using the elem
 
 examples
 
+```javascript
+
     $('#template').doTemplate([{name:'John'},{name:'Jack'}]).appendTo('#names');
 
-    or
+    // or
 
     $('#template').doTemplate({
         data: [{name:'John'},{name:'Jack'}],
@@ -41,6 +47,8 @@ examples
             this.appendTo('#names');
         }
     });
+
+```
 
 ## Template object API
 
