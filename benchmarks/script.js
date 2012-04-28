@@ -5,18 +5,29 @@ var suite = new Benchmark.Suite,
         {name:'Paul', age: 12},
         {name:'Jean', age: 24}
     ],
-    doTTemplate = '<p>{{= it.name }} {{ if (it.age < 18) { }} yes {{ } else { }} no {{ } }}</p>',
-    tmplTemplate = '<p>${name} {{if age < 18}} yes {{else}} no {{/if}}</p>',
+//    doTTemplate = '<p>{{= it.name }} {{ if (it.age < 18) { }} yes {{ } else { }} no {{ } }}</p>',
+//    tmplTemplate = '<p>${name} {{if age < 18}} yes {{else}} no {{/if}}</p>',
+    doTTemplate = '{{=it.name}}',
+    tmplTemplate = '${name}',
     iteration, iterationNb,
     count = {
         'jQuery.doTemplate': 0,
         'jQuery.tmpl': 0
     },
     single = true,
-    async = {async:true},
     resetDiv = function() {
+        
+        delete doTDiv;
+        delete tmplDiv;
+
         doTDiv = document.createElement('div');
         tmplDiv = document.createElement('div');
+    },
+    run = function() {
+        suite.run({
+            async: true,
+            delay: 50
+        });
     };
 
 // doTemplate test
@@ -90,12 +101,12 @@ suite.add('jQuery.doTemplate', function() {
         if (iteration !== iterationNb) {
             
             resetDiv();
+            suite.reset();
 
             // give the system a quick reset before running again
             setTimeout(function() {
-                suite.reset();
-                suite.run(async);
-            }, 2000);
+                run();
+            }, 5000);
         } else {
             $('#status').html('Done!');
             $(':button:not(#abort)').removeProp('disabled');
@@ -112,8 +123,7 @@ $('#run').click(function() {
     $('#results').empty();
     $('#status').html('Running...');
     $(':button:not(#abort)').prop('disabled', true);
-    suite.run(async);
-
+    run();
 });
 
 $('#batch').click(function() {
@@ -126,7 +136,7 @@ $('#batch').click(function() {
     $('#results').empty();
     $('#status').html('Running...');
     $(':button:not(#abort)').prop('disabled', true); 
-    suite.run(async);
+    run();
 });
 
 $('#abort').click(function() {
