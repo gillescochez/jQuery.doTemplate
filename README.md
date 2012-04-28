@@ -5,12 +5,42 @@ $.doTemplate is a jQuery template plugin build around the high performance doT t
 It provides similar features as the popular jquery.tmpl but aims to provide an API that is easier to use and doesn't take extend jQuery too much.
 Also it doesn't store templates for you, but as each template is an object you can easily cache them and reuse them yourself.
 
-Based on the small amount of benchmark made so far, using benchmark.js, jquery.doTemplate is faster than jQuery.tmpl :)
-
-### dependencies
+### Dependencies
 
 * jQuery of course, as early as version 1.2 should work 
 * NOT jQuery UI (unlike the jquery.tmpl successor)
+
+### Benchmarks
+
+Benchmarks are made using benchmark.js with a quickly put together interface to reports results and add the ability to run multiple
+test in on go and be able to track which plugin was the fastest. If the result of benchmark.js is both are as fast then both plugin count
+is increased (which mean the total of both can be higher than the number of iteration)
+
+#### Firefox
+
+#### Chrome
+
+#### Safari
+
+#### Internet Explorer
+
+Of course for this one needed to test multiple version
+
+##### IE9
+
+???
+
+##### IE8
+
+???
+
+##### IE7
+
+???
+
+##### IE6
+
+???
 
 ### Template engine features (doT)
 

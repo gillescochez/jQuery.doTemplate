@@ -8,7 +8,10 @@ var suite = new Benchmark.Suite,
     doTTemplate = '<p>{{= it.name }} {{ if (it.age < 18) { }} yes {{ } else { }} no {{ } }}</p>',
     tmplTemplate = '<p>${name} {{if age < 18}} yes {{else}} no {{/if}}</p>',
     iteration, iterationNb,
-    count = {},
+    count = {
+        'jQuery.doTemplate': 0,
+        'jQuery.tmpl': 0
+    },
     single = true,
     async = {async:true},
     resetDiv = function() {
@@ -71,8 +74,8 @@ suite.add('jQuery.doTemplate', function() {
 
         iterationNb++;
 
-        if (!count[fastest]) count[fastest] = 0;
-        count[fastest]++;
+        if (fastest.indexOf('jQuery.doTemplate') !== -1) count['jQuery.doTemplate']++;
+        if (fastest.indexOf('jQuery.tmpl') !== -1) count['jQuery.tmpl']++;
 
         str += '<table>';
 
