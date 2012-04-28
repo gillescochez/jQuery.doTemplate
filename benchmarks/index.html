@@ -24,6 +24,14 @@ li {
     font-weight:normal;
     color:red;
 }
+table {
+    border:3px solid #ccc;
+    margin:10px;
+    float:left;
+}
+table.fastest {
+    border-color:green;
+}
 th {
     text-align:right;
 }
@@ -31,13 +39,22 @@ th.name {
     text-align:center;
     background:#ccc;
 }
+table.fastest th.name {
+    background:lightgreen;
+}
 </style>
 <body>
-<h1>jQuery.doTemplate vs jQuery.tmpl</h1>
+<p><strong>Benchmarked using benchmark.js</strong></p>
 <ul>
     <li>jQuery.doTemplate: <span class="snippet" id="doTTemplate"></span></li>
     <li>jQuery.tmpl: <span class="snippet" id="tmplTemplate"></span></li>
 </ul>
+<p>
+    <input type="button" id="run" value="Single run" />
+    <input type="button" id="batch" value="Batch run" />
+    Number of batch run: <input type="text" size="5" value="10000" id="iteration" />
+</p>
+<p><input type="button" id="abort" value="Abort" /></p>
 <p id="status"></p>
 <div id="results"></div>
 <script src="script.js"></script>

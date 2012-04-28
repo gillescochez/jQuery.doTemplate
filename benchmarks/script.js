@@ -6,7 +6,15 @@ var suite = new Benchmark.Suite,
         {name:'Jean', age: 24}
     ],
     doTTemplate = '<p>{{= it.name }} {{ if (it.age < 18) { }} yes {{ } else { }} no {{ } }}</p>',
-    tmplTemplate = '<p>${name} {{if age < 18}} yes {{else}} no {{/if}}</p>';
+    tmplTemplate = '<p>${name} {{if age < 18}} yes {{else}} no {{/if}}</p>',
+    iteration, iterationNb,
+    count = {},
+    single = true,
+    async = {async:true},
+    resetDiv = function() {
+        doTDiv = document.createElement('div');
+        tmplDiv = document.createElement('div');
+    };
 
 // doTemplate test
 suite.add('jQuery.doTemplate', function() {
@@ -24,33 +32,105 @@ suite.add('jQuery.doTemplate', function() {
 // display result when all test are done
 .on('complete', function() {
     
-    var str = '<table>';
+    var str = '',
+        fastest = this.filter('fastest').pluck('name').toString();
 
-    $.each(this, function(i, bench) {
-        
-        str += '<tr><th colspan="2" class="name">' + bench.name + '</th></tr>';
-        
-        $.each('variance moe deviation sem rme mean sample'.split(' '), function(j, v) {
+    if (single) {
 
-            str += '<tr><th>';
+        $.each(this, function(i, bench) {
+            
+            str += '<table><tr><th colspan="2" class="name">' + bench.name + '</th></tr>';
+            
+            $.each('variance moe deviation sem rme mean sample'.split(' '), function(j, v) {
 
-            str += v + '</th><td>'
+                str += '<tr><th>';
 
-            if (v == 'sample') str += bench.stats.sample.length;
-            else str += bench.stats[v];
+                str += v + '</th><td>'
 
-            str += '</td></tr>';
+                if (v == 'sample') str += bench.stats.sample.length;
+                else str += bench.stats[v];
+
+                str += '</td></tr>';
+            });
+
+            str += '</table>';
         });
-    });
 
-    $('#status').toggleClass('running').html('Done! Fastest is <strong>' + this.filter('fastest').pluck('name') + '</strong>');
-    $('#results').html(str + '</table>');
+        $('#status').toggleClass('running').html('Done! Fastest is <strong>' + fastest + '</strong>');
+        
+        $('#results').html(str + '</table>')
+        .find('th.name').each(function() { 
+            if ($(this).text() == fastest) $(this).parents('table').addClass('fastest');
+        });
+
+        $(':button:not(#abort)').removeProp('disabled');
+
+        resetDiv();
+
+    } else {
+
+        iterationNb++;
+
+        if (!count[fastest]) count[fastest] = 0;
+        count[fastest]++;
+
+        str += '<table>';
+
+        $.each(count, function(k, v) {
+            str += '<tr><th class="name">' + k+ '</th><td>' + v + '</td></tr>';
+        });
+
+        str += '</table>';
+
+        $('#results').html(str);
+
+        if (iteration !== iterationNb) {
+            
+            resetDiv();
+
+            // give the system a quick reset before running again
+            setTimeout(function() {
+                suite.reset();
+                suite.run(async);
+            }, 2000);
+        } else {
+            $('#status').html('Done!');
+            $(':button:not(#abort)').removeProp('disabled');
+        };
+    };
 });
 
-$('#status').html('Running...');
 $('#doTTemplate').text(doTTemplate);
 $('#tmplTemplate').text(tmplTemplate);
 
-setTimeout(function() {
-    suite.run();
-}, 100);
+$('#run').click(function() {
+    single = true;
+    $('#iterationCount').text('');
+    $('#results').empty();
+    $('#status').html('Running...');
+    $(':button:not(#abort)').prop('disabled', true);
+    suite.run(async);
+
+});
+
+$('#batch').click(function() {
+    
+    single = false;
+    
+    iteration = parseInt($('#iteration').val());
+    iterationNb = 0;
+
+    $('#results').empty();
+    $('#status').html('Running...');
+    $(':button:not(#abort)').prop('disabled', true); 
+    suite.run(async);
+});
+
+$('#abort').click(function() {
+    
+    suite.abort();
+
+    $('#status').html('Aborted by user.');
+    $(':button').removeProp('disabled');
+
+});
