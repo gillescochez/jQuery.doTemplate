@@ -2,10 +2,15 @@
 
 $.doTemplate is a jQuery template plugin build around the high performance doT template engine, which explains the name. 
 
-It provides similar features as the popular jquery.tmpl but aims to provide an API that is easier to use. Also it doesn't store templates for you, 
-but as each template is an object you can easily cache them and reuse them.
+It provides similar features as the popular jquery.tmpl but aims to provide an API that is easier to use and doesn't take extend jQuery too much.
+Also it doesn't store templates for you, but as each template is an object you can easily cache them and reuse them yourself.
 
-Based on the small amount of benchmark made so far, using benchmark.js, jquery.doTemplate is faster than jQuery.tmpl
+Based on the small amount of benchmark made so far, using benchmark.js, jquery.doTemplate is faster than jQuery.tmpl :)
+
+### dependencies
+
+* jQuery of course, as early as version 1.2 should work 
+* NOT jQuery UI (unlike the jquery.tmpl successor)
 
 ### Template engine features (doT)
 
@@ -27,8 +32,6 @@ view the [doT examples](https://github.com/olado/doT/tree/master/examples) to se
 ### $.doTemplate();
 
 The core function that serve new template object based on arguments provided.
-
-examples
 
 ```javascript
 
@@ -54,12 +57,9 @@ examples
 
 ```
 
-
 ### $().doTemplate();
 
 This is an helper function which return a template object created using the element contents
-
-examples
 
 ```javascript
 
@@ -83,7 +83,12 @@ appendTo, prependTo, insertAfter, insertBefore and replace can be used to insert
 
 ### compiling new data
 
-example tmpl.compile([Data Onject]).appendTo('#target');
+```javascript
+
+var tmpl = $.doTemplate(templateString, data).appendTo('#target');
+tmpl.compile(newData).appendTo('#target2'); // append the newly compiled data to a new element
+
+```
 
 ## Usage
 

@@ -234,7 +234,8 @@ $.doTemplate.settings = {
     use: /\{\{#([\s\S]+?)\}\}/g, //compile time evaluation
     define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g, //compile time defs
     varname: 'it',
-    strip : true
+    strip : true,
+    append: true
 };
 
 $.fn.doTemplate = function(data, callback) {

@@ -6,24 +6,40 @@
 <script src="../lib/jquery.js"></script>
 <script src="../dist/$.doTemplate.min.js"></script>
 <script src="jquery.tmpl.js"></script>
-<script type="text/doTemplate" id="listTemplate">
-    <tr>
-        <td class="click">{{= it.name }}</td>
-        <td>{{= it.age }}</td>
-        <td>{{= it.age >= 18 ? 'yes' : 'no' }}</td>
-    </tr>
-</script>
-<script type="text/doTemplate" id="itemTemplate">
-    <tr>
-        <th colspan="3"><strong>{{= it.name }}</strong></th>
-    </tr>
-    <tr>
-        <th>Age</th>
-        <td colspan="2">{{= it.age }}</td>
-    </tr>
-</script>
+<style>
+body {
+    font-family:arial;
+}
+#status {
+    color:green;
+}
+.running {
+    color:blue;
+}
+li {
+    font-weight:bold;
+}
+.snippet {
+    background:#f4f4f4;
+    font-weight:normal;
+    color:red;
+}
+th {
+    text-align:right;
+}
+th.name {
+    text-align:center;
+    background:#ccc;
+}
+</style>
 <body>
-<div id="target"></div>
+<h1>jQuery.doTemplate vs jQuery.tmpl</h1>
+<ul>
+    <li>jQuery.doTemplate: <span class="snippet" id="doTTemplate"></span></li>
+    <li>jQuery.tmpl: <span class="snippet" id="tmplTemplate"></span></li>
+</ul>
+<p id="status"></p>
+<div id="results"></div>
 <script src="script.js"></script>
 </body>
 </html>

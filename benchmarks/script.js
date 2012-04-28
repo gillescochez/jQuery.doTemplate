@@ -1,57 +1,55 @@
 var suite = new Benchmark.Suite,
-    div = document.createElement('div'),
-    tmp = document.createElement('div'),
+    doTDiv = document.createElement('div'),
+    tmplDiv = document.createElement('div'),
     data = [
         {name:'Paul', age: 12},
         {name:'Jean', age: 24}
     ],
-    doTTemplate = '<p>doTemplate: {{= it.name }} : {{= it.age < 18 ? "yes" : "no" }}</p>',
-    tmplTemplate = '<p>tmpl: ${name} : {{if age < 18}}yes{{else}}no{{/if}}</p>',
-    target = document.getElementById('target');
+    doTTemplate = '<p>{{= it.name }} {{ if (it.age < 18) { }} yes {{ } else { }} no {{ } }}</p>',
+    tmplTemplate = '<p>${name} {{if age < 18}} yes {{else}} no {{/if}}</p>';
 
 // doTemplate test
-suite.add('$.doTemplate', function() {
+suite.add('jQuery.doTemplate', function() {
    $.doTemplate({
         source: doTTemplate, 
         data:data
-    }).appendTo(div);
+    }).appendTo(doTDiv);
 })
 
 // tmpl test
 .add('jQuery.tmpl', function() {
-    $.tmpl(tmplTemplate, data).appendTo(div);
+    $.tmpl(tmplTemplate, data).appendTo(tmplDiv);
 })
 
 // display result when all test are done
 .on('complete', function() {
     
-    var str = '<p>';
+    var str = '<table>';
 
     $.each(this, function(i, bench) {
         
-        str += '<strong>' + bench.name + '</strong><br /><br />';
+        str += '<tr><th colspan="2" class="name">' + bench.name + '</th></tr>';
         
-        $.each(bench.stats, function(k, v) {
+        $.each('variance moe deviation sem rme mean sample'.split(' '), function(j, v) {
 
-            str += k + ': '
+            str += '<tr><th>';
 
-            if (k == 'sample') str += v.length;
-            else str += v;
+            str += v + '</th><td>'
 
-            str += '<br />';
+            if (v == 'sample') str += bench.stats.sample.length;
+            else str += bench.stats[v];
+
+            str += '</td></tr>';
         });
-
-        str += '</p>';
     });
 
-    document.getElementById('status').innerHTML = 'Done! Fastest is ' + this.filter('fastest').pluck('name');
-    document.getElementById('results').innerHTML = str;
+    $('#status').toggleClass('running').html('Done! Fastest is <strong>' + this.filter('fastest').pluck('name') + '</strong>');
+    $('#results').html(str + '</table>');
 });
 
-target.innerHTML = '<h1>Benchamarks</h1>\
-<h2>$.doTemplate vs $.tmpl</h2>\
-<p id="status">Runing...</p>\
-<p id="results"></p>';
+$('#status').html('Running...');
+$('#doTTemplate').text(doTTemplate);
+$('#tmplTemplate').text(tmplTemplate);
 
 setTimeout(function() {
     suite.run();
