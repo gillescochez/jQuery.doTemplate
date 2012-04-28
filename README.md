@@ -5,7 +5,7 @@ $.doTemplate is a jQuery template plugin build around the high performance [doT]
 It provides similar features as the popular jquery.tmpl but aims to provide an API that is easier to use and doesn't take extend jQuery too much.
 Also it doesn't store templates for you, but as each template is an object you can easily cache them and reuse them yourself.
 
-## Menu
+### Menu
 
 * [Dependencies](#dependencies)
 * [Features doT](#features-dot)
@@ -16,12 +16,12 @@ Also it doesn't store templates for you, but as each template is an object you c
 * [Credits](#credits)
 
 
-### Dependencies
+## Dependencies
 
 * jQuery of course, as early as version 1.2 should work 
 * NOT jQuery UI (unlike the jquery.tmpl successor)
 
-### Features doT
+## Features doT
 
 * custom delimiters
 * runtime evaluation
@@ -38,7 +38,7 @@ view the [doT examples](https://github.com/olado/doT/tree/master/examples) to se
 
 ## Builder API
 
-### $.doTemplate();
+### jQuery.doTemplate();
 
 The core function that serve new template object based on arguments provided.
 
@@ -66,7 +66,7 @@ The core function that serve new template object based on arguments provided.
 
 ```
 
-### $().doTemplate();
+### jQuery().doTemplate();
 
 This is an helper function which return a template object created using the element contents
 
