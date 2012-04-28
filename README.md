@@ -11,8 +11,9 @@ Also it doesn't store templates for you, but as each template is an object you c
 * [Features doT](#features-dot)
 * [Builder API](#builder-api)
 * [Template API](#template-api)
+* [Installation](#installation)
 * [Examples](#examples)
-* [Benchmarks](#benchmark)
+* [Benchmarks](#benchmarks)
 * [Credits](#credits)
 
 
