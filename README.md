@@ -197,6 +197,9 @@ Benchmarks are made using benchmark.js with a quickly put together interface to 
 test in on go and be able to track which plugin was the fastest. If the result of benchmark.js is both are as fast then both plugin count
 is increased (which mean the total of both can be higher than the number of iteration)
 
+The results below are the results optain by running 10,000 time the suite in each browser and counting the number of time where the plugin
+was returned as the fastest. This took a while to run, but the iteration count can be updated if you wanna play around :)
+
 #### Firefox
 
 #### Chrome
