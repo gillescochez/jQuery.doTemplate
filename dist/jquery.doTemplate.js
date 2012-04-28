@@ -46,10 +46,8 @@ $.doTemplate = (function() {
             if (!data) return this;
             
             // force data into an array if needed
-            if (data.constructor == Object) data = [data];
-            
-            // loop through data and add new item
-            $.each(data, add);
+            if ($.isArray(data)) $.each(data, add);
+            else add(null, data);
             
             // store compiled version as jQuery object (so we can clone it on render)
             this.compiled = $(frag);
