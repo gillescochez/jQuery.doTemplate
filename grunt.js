@@ -2,7 +2,7 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     meta: {
-      banner: '/*! github.com/gillescochez/$.doTemplate */'
+      banner: '/*! github.com/gillescochez/jQuery.doTemplate */'
     },
     concat: {
       dist: {
@@ -14,13 +14,13 @@ module.exports = function(grunt) {
             'src/plugin.js',
             'src/foot.js'
         ],
-        dest: 'dist/$.doTemplate.js'
+        dest: 'dist/jquery.doTemplate.js'
       }
     },
     min: {
       dist: {
-        src: ['<banner>', 'dist/$.doTemplate.js'],
-        dest: 'dist/$.doTemplate.min.js'
+        src: ['<banner>', 'dist/jquery.doTemplate.js'],
+        dest: 'dist/jquery.doTemplate.min.js'
       }
     }
   });

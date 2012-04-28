@@ -1,4 +1,4 @@
-/*! github.com/gillescochez/$.doTemplate */
+/*! github.com/gillescochez/jQuery.doTemplate */
 
 (function($){
 

@@ -1,48 +1,27 @@
 ## jQuery.doTemplate
 
-$.doTemplate is a jQuery template plugin build around the high performance doT template engine, which explains the name. 
+$.doTemplate is a jQuery template plugin build around the high performance [doT](#credits) template engine, which explains the name. 
 
 It provides similar features as the popular jquery.tmpl but aims to provide an API that is easier to use and doesn't take extend jQuery too much.
 Also it doesn't store templates for you, but as each template is an object you can easily cache them and reuse them yourself.
+
+## Menu
+
+* [Dependencies](#dependencies)
+* [Features doT](#features-dot)
+* [Builder API](#builder-api)
+* [Template API](#template-api)
+* [Examples](#examples)
+* [Benchmarks](#benchmark)
+* [Credits](#credits)
+
 
 ### Dependencies
 
 * jQuery of course, as early as version 1.2 should work 
 * NOT jQuery UI (unlike the jquery.tmpl successor)
 
-### Benchmarks
-
-Benchmarks are made using benchmark.js with a quickly put together interface to reports results and add the ability to run multiple
-test in on go and be able to track which plugin was the fastest. If the result of benchmark.js is both are as fast then both plugin count
-is increased (which mean the total of both can be higher than the number of iteration)
-
-#### Firefox
-
-#### Chrome
-
-#### Safari
-
-#### Internet Explorer
-
-Of course for this one needed to test multiple version
-
-##### IE9
-
-???
-
-##### IE8
-
-???
-
-##### IE7
-
-???
-
-##### IE6
-
-???
-
-### Template engine features (doT)
+### Features doT
 
 * custom delimiters
 * runtime evaluation
@@ -55,9 +34,9 @@ Of course for this one needed to test multiple version
 * control whitespace - strip or preserve
 * streaming friendly
 
-view the [doT examples](https://github.com/olado/doT/tree/master/examples) to see advanced template scripts
+view the [doT examples](https://github.com/olado/doT/tree/master/examples) to see advanced template syntax
 
-## Template builder API
+## Builder API
 
 ### $.doTemplate();
 
@@ -102,7 +81,7 @@ This is an helper function which return a template object created using the elem
 
 ```
 
-## Template object API
+## Template API
 
 The template builder methods return a template object. That object has an API to simplify the rendering of compiled
 content in the document.
@@ -120,7 +99,16 @@ tmpl.compile(newData).appendTo('#target2'); // append the newly compiled data to
 
 ```
 
-## Usage
+## Installation
+
+```html
+
+<script src="jquery.min.js"></script>
+<script src="jquery.doTemplate.min.js"></script>
+
+```
+
+## Examples
 
 ### Using script tags to store templates
 
@@ -202,7 +190,38 @@ $.doTemplate('<p>{{= it.name }} : {{= it.age }}</p>', data).appendTo('#list');
 	
 ```
 
+### Benchmarks
+
+Benchmarks are made using benchmark.js with a quickly put together interface to reports results and add the ability to run multiple
+test in on go and be able to track which plugin was the fastest. If the result of benchmark.js is both are as fast then both plugin count
+is increased (which mean the total of both can be higher than the number of iteration)
+
+#### Firefox
+
+#### Chrome
+
+#### Safari
+
+#### Internet Explorer
+
+Of course for this one needed to test multiple version
+
+##### IE9
+
+???
+
+##### IE8
+
+???
+
+##### IE7
+
+???
+
+##### IE6
+
+???
 
 ## Credits
 
-The template engine is powered by [doT.js](http://olado.github.com/doT/), written by [Laura Doktorova](https://github.com/olado).
+The template engine is powered by [doT.js](http://olado.github.com/doT/), written by [Laura Doktorova](https://github.com/olado), this is why jQuery.doTemplate is so fast.
