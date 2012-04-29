@@ -2,54 +2,20 @@
 
 $.doTemplate is a jQuery template plugin build around the high performance [doT](#credits) template engine, which is where the name come from and, well, it clearly state what it does too :)
 
-It provides similar features than jQuery.tmpl but aims to provide a simplier API and has better performance than the former, also it's template syntax is different and it doesn't allow you
-to store templates. However this is easily done as template object can be cached, reused and even served as base for a new template creation.
+It provides similar features than jQuery.tmpl but aims to provide a simplier API and better performance, butit doesn't allow you to store templates. 
+However this is easily done as template object can be cached, reused and even served as base for a new template creation.
+
+Best thing is to try it and make your own mind, hopefully there is enough below to help you get started :)
 
 ### Menu
 
-* [Features doT](#features-dot)
-* [Settings doT](#settings-dot)
 * [Builder API](#builder-api)
 * [Template API](#template-api)
 * [Installation](#installation)
 * [Examples](#examples)
 * [Benchmarks](#benchmarks)
+* [About doT](#about-dot)
 * [Credits](#credits)
-
-## Features doT
-
-* custom delimiters
-* runtime evaluation
-* runtime interpolation
-* compile-time evaluation
-* partials support
-* encoding
-* conditionals
-* array iteration
-* control whitespace - strip or preserve
-* streaming friendly
-
-view the [doT examples](https://github.com/olado/doT/tree/master/examples) to see advanced template syntax
-
-## Settings doT
-
-All the settings exposed are used by the doT and allows you to customize the template engine.
-You can set your own delimiters by updating the regex expressions.
-
-```javascript
-
-$.doTemplate.settings = {
-    evaluate: /\{\{([\s\S]+?)\}\}/g, // {{ }}
-    interpolate: /\{\{=([\s\S]+?)\}\}/g, // {{= }}
-    encode: /\{\{!([\s\S]+?)\}\}/g, // {{! }}
-    use: /\{\{#([\s\S]+?)\}\}/g, // {{# }}
-    define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g, // {{## }}
-    varname: 'it', // e.g. {{= it.name }}
-    strip : true, // strip white space
-    append: true
-};
-
-```
 
 ## Builder API
 
@@ -103,9 +69,13 @@ content in the document.
 
 ### rendering methods
 
-appendTo, prependTo, insertAfter, insertBefore and replace can be used to insert the compiled source into the DOM
+The main rendering methods are appendTo, prependTo, insertAfter, insertBefore and replace and behave as you woudl expect. This [examples](#examples) for usage.
+
+The render method is more of an internal helper for the methods stated above but it you want to save yourself a function call check the code to see how to use it.
 
 ### compiling new data
+
+You can update an already created template by using the compile method and passing it the new data as seen below.
 
 ```javascript
 
@@ -115,6 +85,8 @@ tmpl.compile(newData).appendTo('#target2'); // append the newly compiled data to
 ```
 
 ## Installation
+
+As you would expect any jquery plugin.
 
 ```html
 
@@ -176,11 +148,22 @@ var data = [
 var templ = $('#listTemplate').doTemplate(data).appendTo('#list');
 
 $('td.click').live('click', function() {
-    $('#itemTemplate').doTemplate(this).replace($(this).parent());
+    
+    // grab the new source provider
+    $('#itemTemplate')
+    
+    
+    // here doTemplate will grab the doTemplate object store when the element, this, was created and compile its data with the new source
+    // as it was in a loop this allow use to render a single row without any hassle
+    .doTemplate(this)
+    
+    // we use the replace function to replace the old row
+    .replace($(this).parent());
 });
 
 setTimeout(function() {
-        
+    
+    // we update the template with the data and append that to another element
     templ.compile([
         {name: 'Paulette', age: 69},
         {name: 'Jean', age: 18},
@@ -211,8 +194,15 @@ Benchmarks are made using benchmark.js with a quickly put together interface to 
 test in on go and be able to track which plugin was the fastest. If the result of benchmark.js is both are as fast then both plugin count
 is increased (which mean the total of both can be higher than the number of iteration)
 
-The results below are the results optain by running 10,000 time the suite in each browser and counting the number of time where the plugin
-was returned as the fastest. This took a while to run, but the iteration count can be updated if you wanna play around :)
+This is the only 2 line benchmarked so far.
+
+```javascript
+
+jquery.tmpl(templateString, data).appendTo(div);
+
+$.doTemplate(templateString, data).appendTo(div);
+
+```
 
 #### Firefox
 
@@ -240,6 +230,48 @@ Of course for this one needed to test multiple version
 
 ???
 
+## About doT
+
+doT is the template engine used by jQuery.doTemplate, it's very fast, flexible.
+
+### Syntax
+
+Please check the [doT examples](https://github.com/olado/doT/tree/master/examples) to see the template syntax
+
+### Features
+
+* custom delimiters
+* runtime evaluation
+* runtime interpolation
+* compile-time evaluation
+* partials support
+* encoding
+* conditionals
+* array iteration
+* control whitespace - strip or preserve
+* streaming friendly
+
+
+## Settings
+
+All the settings exposed are used by the doT and allows you to customize the template engine.
+You can set your own delimiters by updating the regex expressions.
+
+```javascript
+
+$.doTemplate.settings = {
+    evaluate: /\{\{([\s\S]+?)\}\}/g, // {{ }}
+    interpolate: /\{\{=([\s\S]+?)\}\}/g, // {{= }}
+    encode: /\{\{!([\s\S]+?)\}\}/g, // {{! }}
+    use: /\{\{#([\s\S]+?)\}\}/g, // {{# }}
+    define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g, // {{## }}
+    varname: 'it', // e.g. {{= it.name }}
+    strip : true, // strip white space
+    append: true // performance tweak settings some javascript engine perform better with this set to false
+};
+
+```
+
 ## Credits
 
-The template engine is powered by [doT.js](http://olado.github.com/doT/), written by [Laura Doktorova](https://github.com/olado), this is why jQuery.doTemplate is so fast.
+The template engine is powered by [doT.js](http://olado.github.com/doT/), written by [Laura Doktorova](https://github.com/olado).
