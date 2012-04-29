@@ -7,7 +7,6 @@ Also it doesn't store templates for you, but as each template is an object you c
 
 ### Menu
 
-* [Dependencies](#dependencies)
 * [Features doT](#features-dot)
 * [Settings doT](#settings-dot)
 * [Builder API](#builder-api)
@@ -16,12 +15,6 @@ Also it doesn't store templates for you, but as each template is an object you c
 * [Examples](#examples)
 * [Benchmarks](#benchmarks)
 * [Credits](#credits)
-
-
-## Dependencies
-
-* jQuery of course, as early as version 1.2 should work 
-* NOT jQuery UI (unlike the jquery.tmpl successor)
 
 ## Features doT
 
