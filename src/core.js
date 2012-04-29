@@ -1,7 +1,7 @@
 $.doTemplate = (function() {
 
     // template object constructor
-    var t = function doTemplate(config) {
+    var t = function (config) {
 
         this.source = config.source;
         this.data = config.data;
@@ -32,7 +32,7 @@ $.doTemplate = (function() {
                     // create a jQuery object
                     $item = $(compiled_src);
 
-                    // is there some DOM?
+                    // is there some DOM? 
                     if ($item[0]) {
                     
                         $item.data('doTemplate', {
@@ -140,7 +140,7 @@ $.doTemplate = (function() {
                         data: obj.data
                     });
 
-                } else if(args[1].constructor == Object) {
+                } else {
 
                     return new t({
                         source: args[0],

@@ -5,7 +5,7 @@
 $.doTemplate = (function() {
 
     // template object constructor
-    var t = function doTemplate(config) {
+    var t = function (config) {
 
         this.source = config.source;
         this.data = config.data;
@@ -144,7 +144,7 @@ $.doTemplate = (function() {
                         data: obj.data
                     });
 
-                } else if(args[1].constructor == Object) {
+                } else {
 
                     return new t({
                         source: args[0],
