@@ -32,20 +32,15 @@ $.doTemplate = (function() {
                     // create a jQuery object
                     $item = $(compiled_src);
 
-                    // is there some DOM? 
-                    if ($item[0]) {
+                    // is there some DOM? If not assume text and use a textNode instead 
+                    if (!$item[0]) $item = $(document.createTextNode(compiled_src));
                     
-                        $item.data('doTemplate', {
-                            source: this.source,
-                            data: object
-                        }).each(function() {
-                            frag.appendChild(this);
-                        });
-
-                    } else {
-                        if (frag.constructor != String) frag = '';
-                        frag += compiled_src;
-                    };
+                    $item.data('doTemplate', {
+                        source: this.source,
+                        data: object
+                    }).each(function() {
+                        frag.appendChild(this);
+                    });
                 };
                         
             // handle correct data
@@ -86,7 +81,7 @@ $.doTemplate = (function() {
         render: function(selector, type) {
 
             // we insert a clone, inc data,  so the same compiled template can be inserted multiple time
-            $(selector)[type](this.compiled.jquery ? this.compiled.clone(true) : this.compiled);
+            $(selector)[type](this.compiled.clone(true));
             return this;
         }
     });
