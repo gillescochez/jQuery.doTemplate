@@ -31,17 +31,19 @@ $.doTemplate.engine = (function() {
             str = (c.use || c.define) ? resolveDefs(c, tmpl, def || {}) : tmpl;
 
         str = (
-                "var out='" + ((c.strip) ? str.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]|(\/\*[\s\S]*?\*\/)/g, ''): str)
+                "var out='" + ((c.strip) ? str.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]|(\/\*[\s\S]*?\*\/)/g, '') : str)
                 .replace(/\\/g, '\\\\')
                 .replace(/'/g, "\\'")
                 .replace(c.interpolate, function(match, code) {
-                        return cstart + code.replace(/\\'/g, "'").replace(/\\\\/g,"\\").replace(/[\r\t\n]/g, ' ') + cend;
+                    return cstart + code.replace(/\\'/g, "'").replace(/\\\\/g,"\\").replace(/[\r\t\n]/g, ' ') + cend;
                 })
                 .replace(c.encode, function(match, code) {
-                        return cstart + code.replace(/\\'/g, "'").replace(/\\\\/g, "\\").replace(/[\r\t\n]/g, ' ') + ").toString().replace(/&(?!\\w+;)/g, '&#38;').split('<').join('&#60;').split('>').join('&#62;').split('" + '"' + "').join('&#34;').split(" + '"' + "'" + '"' + ").join('&#39;').split('/').join('&#47;'" + cend;
+                    return cstart + code.replace(/\\'/g, "'").replace(/\\\\/g, "\\").replace(/[\r\t\n]/g, ' ') 
+                        + ").toString().replace(/&(?!\\w+;)/g, '&#38;').split('<').join('&#60;').split('>').join('&#62;').split('" 
+                        + '"' + "').join('&#34;').split(" + '"' + "'" + '"' + ").join('&#39;').split('/').join('&#47;'" + cend;
                 })
                 .replace(c.evaluate, function(match, code) {
-                        return "';" + code.replace(/\\'/g, "'").replace(/\\\\/g,"\\").replace(/[\r\t\n]/g, ' ') + "out+='";
+                    return "';" + code.replace(/\\'/g, "'").replace(/\\\\/g,"\\").replace(/[\r\t\n]/g, ' ') + "out+='";
                 })
                 + "';return out;"
         )
@@ -51,7 +53,7 @@ $.doTemplate.engine = (function() {
         .split("out+='';").join('')
         .split("var out='';out+=").join('var out=');
 
-        try { return new Function(c.varname, str); } catch (e) { throw e; }
+        try { return new Function('$.extend(this,arguments[0]);' + str); } catch (e) { throw e; }
     };
 })();
 
@@ -61,7 +63,6 @@ $.doTemplate.settings = {
     encode: /\{\{!([\s\S]+?)\}\}/g,
     use: /\{\{#([\s\S]+?)\}\}/g,
     define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
-    varname: 'it',
-    strip : true,
+    strip : false,
     append: true
 };

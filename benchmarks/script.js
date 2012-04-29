@@ -18,8 +18,8 @@ var suite = new Benchmark.Suite,
     },
     tests = {
         simple: {
-            data: {name:'a'},
-            doTTemplate: '{{= it.name }}',
+            data: {name:'Paul'},
+            doTTemplate: '{{= name }}',
             tmplTemplate: '${name}'
         },
         normal: {
@@ -52,11 +52,33 @@ var suite = new Benchmark.Suite,
             tmplTemplate:''
         }
     },
-    test = 'simple';
+    test = 'simple',
+    firstrun = false;
 
 // doTemplate test
 suite.add('jQuery.doTemplate', function() {
-   $.doTemplate(tests[test].doTTemplate, tests[test].data).appendTo(doTDiv);
+
+   //$.doTemplate(tests[test].doTTemplate, tests[test].data).appendTo(doTDiv);
+
+   $.doTemplate({
+        source: tests[test].doTTemplate,
+        data: tests[test].data,
+        settings: {
+            evaluate: /\{\{([\s\S]+?)\}\}/g,
+            interpolate: /\{\{=([\s\S]+?)\}\}/g,
+            encode: /\{\{!([\s\S]+?)\}\}/g,
+            use: /\{\{#([\s\S]+?)\}\}/g,
+            define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
+            varname: 'it',
+            strip : false,
+            append: false
+        }
+   }).appendTo(doTDiv);
+
+   if (!firstrun) {
+        firstrun = true;
+        console.log(doTDiv.innerHTML);
+   };
 })
 
 // tmpl test
@@ -143,6 +165,7 @@ $('#template').change(function() {
 $('#run').click(function() {
     resetDiv();
     single = true;
+    firstrun = false;
     $('#iterationCount').text('');
     $('#results').empty();
     $('#status').html('Running...');
@@ -153,7 +176,8 @@ $('#run').click(function() {
 $('#batch').click(function() {
     
     single = false;
-    
+    firstrun = false;
+
     iteration = parseInt($('#iteration').val());
     iterationNb = 0;
 

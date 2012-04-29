@@ -5,8 +5,9 @@ $.doTemplate = (function() {
 
         this.source = config.source;
         this.data = config.data;
+        this.settings = $.extend({}, $.doTemplate.settings, config.settings || {});
 
-        if (this.source) this.compiler = $.doTemplate.engine(this.source);
+        if (this.source) this.compiler = $.doTemplate.engine(this.source, this.settings);
 
         if (this.data) this.compile(config.data);
         else this.compiled = null;
