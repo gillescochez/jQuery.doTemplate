@@ -134,9 +134,6 @@ suite.add('jQuery.doTemplate', function() {
 });
 
 // Some interface setups
-$('#doTTemplate').text(doTTemplate);
-$('#tmplTemplate').text(tmplTemplate);
-
 $('#template').change(function() {
     test = $(this).val();
     $('#doTTemplate').text(tests[test].doTTemplate);
