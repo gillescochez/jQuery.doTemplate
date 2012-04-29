@@ -29,7 +29,7 @@ var suite = new Benchmark.Suite,
                 {name:'Henri', age:30},
                 {name:'Simon', age:60}
             ],
-            doTTemplate: '<p>{{= it.name }} {{ if (it.age < 18) { }} yes {{ } else { }} no {{ } }}</p>',
+            doTTemplate: '<p>{{= name }} {{ if (age < 18) { }} yes {{ } else { }} no {{ } }}</p>',
             tmplTemplate: '<p>${name} {{if age < 18}} yes {{else}} no {{/if}}</p>'
         },
         complex: {
@@ -69,7 +69,6 @@ suite.add('jQuery.doTemplate', function() {
             encode: /\{\{!([\s\S]+?)\}\}/g,
             use: /\{\{#([\s\S]+?)\}\}/g,
             define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
-            varname: 'it',
             strip : false,
             append: false
         }

@@ -14,7 +14,6 @@ Best thing is to try it and make your own mind, hopefully there is enough below 
 * [Installation](#installation)
 * [Examples](#examples)
 * [Benchmarks](#benchmarks)
-* [About doT](#about-dot)
 * [Credits](#credits)
 
 ## Builder API
@@ -104,18 +103,18 @@ As you would expect any jquery plugin.
 <head>
     <script type="text/doTemplate" id="listTemplate">
         <tr>
-            <td class="click">{{= it.name }}</td>
-            <td>{{= it.age }}</td>
-            <td>{{= it.age >= 18 ? 'yes' : 'no' }}</td>
+            <td class="click">{{= name }}</td>
+            <td>{{= age }}</td>
+            <td>{{= age >= 18 ? 'yes' : 'no' }}</td>
         </tr>
     </script>
     <script type="text/doTemplate" id="itemTemplate">
         <tr>
-            <th colspan="3"><strong>{{= it.name }}</strong></th>
+            <th colspan="3"><strong>{{= name }}</strong></th>
         </tr>
         <tr>
             <th>Age</th>
-            <td colspan="2">{{= it.age }}</td>
+            <td colspan="2">{{= age }}</td>
         </tr>
     </script>
 </head>
@@ -135,6 +134,7 @@ As you would expect any jquery plugin.
     <tbody id="list2"></tbody>
 </table>
 </body>
+
 ```
 
 ```javascript
@@ -184,7 +184,7 @@ var data = [
     {name: 'Jesus', age: 33},
 ];
 
-$.doTemplate('<p>{{= it.name }} : {{= it.age }}</p>', data).appendTo('#list');
+$.doTemplate('<p>{{= name }} : {{= age }}</p>', data).appendTo('#list');
 	
 ```
 
@@ -206,48 +206,6 @@ $.doTemplate(templateString, data).appendTo(div);
 
 So far jQuery.doTemplate is always faster than jquery.tmpl on FF, Chrome and IE9. 
 Chrome and FF are tested on both windows and linux platform (chromium-browser on linux)
-
-## About doT
-
-doT is the template engine used by jQuery.doTemplate, it's very fast, flexible.
-
-### Syntax
-
-Please check the [doT examples](https://github.com/olado/doT/tree/master/examples) to see the template syntax
-
-### Features
-
-* custom delimiters
-* runtime evaluation
-* runtime interpolation
-* compile-time evaluation
-* partials support
-* encoding
-* conditionals
-* array iteration
-* control whitespace - strip or preserve
-* streaming friendly
-
-
-## Settings
-
-All the settings exposed are used by the doT and allows you to customize the template engine.
-You can set your own delimiters by updating the regex expressions.
-
-```javascript
-
-$.doTemplate.settings = {
-    evaluate: /\{\{([\s\S]+?)\}\}/g, // {{ }}
-    interpolate: /\{\{=([\s\S]+?)\}\}/g, // {{= }}
-    encode: /\{\{!([\s\S]+?)\}\}/g, // {{! }}
-    use: /\{\{#([\s\S]+?)\}\}/g, // {{# }}
-    define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g, // {{## }}
-    varname: 'it', // e.g. {{= it.name }}
-    strip : true, // strip white space
-    append: true // performance tweak settings some javascript engine perform better with this set to false
-};
-
-```
 
 ## Credits
 
