@@ -204,31 +204,8 @@ $.doTemplate(templateString, data).appendTo(div);
 
 ```
 
-#### Firefox
-
-#### Chrome
-
-#### Safari
-
-#### Internet Explorer
-
-Of course for this one needed to test multiple version
-
-##### IE9
-
-???
-
-##### IE8
-
-???
-
-##### IE7
-
-???
-
-##### IE6
-
-???
+So far jQuery.doTemplate is always faster than jquery.tmpl on FF, Chrome and IE9. 
+Chrome and FF are tested on both windows and linux platform (chromium-browser on linux)
 
 ## About doT
 
