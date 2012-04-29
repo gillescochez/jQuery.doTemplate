@@ -1,9 +1,9 @@
 ## jQuery.doTemplate
 
-$.doTemplate is a jQuery template plugin build around the high performance [doT](#credits) template engine, which explains the name. 
+$.doTemplate is a jQuery template plugin build around the high performance [doT](#credits) template engine, which is where the name come from and, well, it clearly state what it does too :)
 
-It provides similar features as the popular jquery.tmpl but aims to provide an API that is easier to use and doesn't take extend jQuery too much.
-Also it doesn't store templates for you, but as each template is an object you can easily cache them and reuse them yourself.
+It provides similar features than jQuery.tmpl but aims to provide a simplier API and has better performance than the former, also it's template syntax is different and it doesn't allow you
+to store templates. However this is easily done as template object can be cached, reused and even served as base for a new template creation.
 
 ### Menu
 
@@ -33,8 +33,8 @@ view the [doT examples](https://github.com/olado/doT/tree/master/examples) to se
 
 ## Settings doT
 
-All the settings exposed are used by doT engine and allows you to customize the template engine.
-You can set your own delimiters by updating the regex experssions.
+All the settings exposed are used by the doT and allows you to customize the template engine.
+You can set your own delimiters by updating the regex expressions.
 
 ```javascript
 
