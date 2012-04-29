@@ -28,11 +28,10 @@ $.doTemplate = (function() {
                 tmp = document.createElement('div'),
                 compiler = this.compiler || $.doTemplate.engine(this.source),
                 compiled_src, $item,
-                self = this,
                 add = function(i, object) {
                 
                     // get the compiled source string
-                    compiled_src = self.compiler(object);
+                    compiled_src = compiler(object);
  
                     // create a jQuery object
                     $item = $(compiled_src);
