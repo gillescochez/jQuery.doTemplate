@@ -23,34 +23,44 @@ $.doTemplate = (function() {
         compile: function(data) {
         
             var frag = document.createDocumentFragment(),
+                tmp = document.createElement('div'),
                 compiler = $.doTemplate.engine(this.source),
                 compiled_src, $item,
                 add = function(i, object) {
                 
                     // get the compiled source string
                     compiled_src = compiler(object);
-                    
+ 
                     // create a jQuery object
                     $item = $(compiled_src);
+
+                    // is there some DOM?
+                    if ($item[0]) {
                     
-                    $item.data('doTemplate', {
-                        source: this.source,
-                        data: object
-                    }).each(function() {
-                        frag.appendChild(this);
-                    });
+                        $item.data('doTemplate', {
+                            source: this.source,
+                            data: object
+                        }).each(function() {
+                            frag.appendChild(this);
+                        });
+
+                    } else {
+                        if (frag.constructor != String) frag = '';
+                        frag += compiled_src;
+                    };
                 };
                         
             // handle correct data
-            data = data || this.data || false;
+            data = data || this.data || null;
             if (!data) return this;
             
             // force data into an array if needed
-            if ($.isArray(data)) $.each(data, add);
-            else add(null, data);
+            if (data.constructor != Array) data = [data];
+            $.each(data, add);
             
             // store compiled version as jQuery object (so we can clone it on render)
-            this.compiled = $(frag);
+            if (frag.constructor == String) this.compiled = frag;
+            else this.compiled = $(frag);
             
             return this;
         },
@@ -78,7 +88,7 @@ $.doTemplate = (function() {
         render: function(selector, type) {
 
             // we insert a clone, inc data,  so the same compiled template can be inserted multiple time
-            $(selector)[type](this.compiled.clone(true));
+            $(selector)[type](this.compiled.jquery ? this.compiled.clone(true) : this.compiled);
             return this;
         }
     });
@@ -229,8 +239,8 @@ $.doTemplate.settings = {
     evaluate: /\{\{([\s\S]+?)\}\}/g,
     interpolate: /\{\{=([\s\S]+?)\}\}/g,
     encode: /\{\{!([\s\S]+?)\}\}/g,
-    use: /\{\{#([\s\S]+?)\}\}/g, //compile time evaluation
-    define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g, //compile time defs
+    use: /\{\{#([\s\S]+?)\}\}/g,
+    define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
     varname: 'it',
     strip : true,
     append: true

@@ -1,13 +1,11 @@
 var suite = new Benchmark.Suite,
-    doTDiv = document.createElement('div'),
-    tmplDiv = document.createElement('div'),
-    data = [
-        {name:'Paul', age: 12},
-        {name:'Jean', age: 24}
-    ],
+    doTDiv, tmplDiv,
+    data = {name:'Paul', age: 12},
+
 //    doTTemplate = '<p>{{= it.name }} {{ if (it.age < 18) { }} yes {{ } else { }} no {{ } }}</p>',
 //    tmplTemplate = '<p>${name} {{if age < 18}} yes {{else}} no {{/if}}</p>',
-    doTTemplate = '{{=it.name}}',
+
+    doTTemplate = '{{= it.name }}',
     tmplTemplate = '${name}',
     iteration, iterationNb,
     count = {
@@ -26,7 +24,7 @@ var suite = new Benchmark.Suite,
     run = function() {
         suite.run({
             async: true,
-            delay: 50
+            delay: 500
         });
     };
 
@@ -77,9 +75,7 @@ suite.add('jQuery.doTemplate', function() {
             if ($(this).text() == fastest) $(this).parents('table').addClass('fastest');
         });
 
-        $(':button:not(#abort)').removeProp('disabled');
-
-        resetDiv();
+        $(':button:not(#abort)').removeProp('disabled'); 
 
     } else {
 
@@ -118,6 +114,7 @@ $('#doTTemplate').text(doTTemplate);
 $('#tmplTemplate').text(tmplTemplate);
 
 $('#run').click(function() {
+    resetDiv();
     single = true;
     $('#iterationCount').text('');
     $('#results').empty();
