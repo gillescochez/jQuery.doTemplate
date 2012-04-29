@@ -25,14 +25,14 @@ The core function that serve new template object based on arguments provided.
 ```javascript
 
     // pass source and data as arguments
-    $.doTemplate('<p>{{= it.name }}</p>', [{name:'John'},{name:'Jack'}]).appendTo('#names');
+    $.doTemplate('<p>{{= name }}</p>', [{name:'John'},{name:'Jack'}]).appendTo('#names');
 
     // or
 
     // pass a configuration object
     $.doTemplate({
         data: [{name:'John'},{name:'Jack'}],
-        source: '<p>{{= it.name }}</p>',
+        source: '<p>{{= name }}</p>',
     })
     .appendTo('#names');
 
@@ -41,7 +41,7 @@ The core function that serve new template object based on arguments provided.
     $.doTemplate(element);
 
     // if a source is passed first it will be used instead of the original template
-    $.doTemplate('<div>{{= it.name }}</div>', element).appendTo('#itemId');
+    $.doTemplate('<div>{{= name }}</div>', element).appendTo('#itemId');
 
 
 ```
