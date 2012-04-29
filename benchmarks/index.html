@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <meta charset="utf-8" />
-<title>Bemchmarks</title>
+<title>Benchmarks</title>
 <script src="benchmark.js"></script>
 <script src="../lib/jquery.js"></script>
 <script src="../dist/jquery.doTemplate.min.js"></script>
@@ -45,6 +45,13 @@ table.fastest th.name {
 </style>
 <body>
 <p><strong>Benchmarked using benchmark.js</strong></p>
+<p>
+    Templates: <select id="template">
+        <option value="simple">Simple</option>
+        <option value="normal">Normal</option>
+        <option value="complex">Complex</option>
+    </select>
+</p>
 <ul>
     <li>jQuery.doTemplate: <span class="snippet" id="doTTemplate"></span></li>
     <li>jQuery.tmpl: <span class="snippet" id="tmplTemplate"></span></li>

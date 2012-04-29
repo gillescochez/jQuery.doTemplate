@@ -1,13 +1,5 @@
 var suite = new Benchmark.Suite,
     doTDiv, tmplDiv,
-    data = {name:'Paul', age: 12},
-
-//    doTTemplate = '<p>{{= it.name }} {{ if (it.age < 18) { }} yes {{ } else { }} no {{ } }}</p>',
-//    tmplTemplate = '<p>${name} {{if age < 18}} yes {{else}} no {{/if}}</p>',
-
-    doTTemplate = '{{= it.name }}',
-    tmplTemplate = '${name}',
-    $doTemplate = $.doTemplate(doTTemplate), 
     iteration, iterationNb,
     count = {
         'jQuery.doTemplate': 0,
@@ -15,10 +7,6 @@ var suite = new Benchmark.Suite,
     },
     single = true,
     resetDiv = function() {
-        
-        delete doTDiv;
-        delete tmplDiv;
-
         doTDiv = document.createElement('div');
         tmplDiv = document.createElement('div');
     },
@@ -27,21 +15,53 @@ var suite = new Benchmark.Suite,
             async: true,
             delay: 500
         });
-    };
-console.log($.doTemplate(doTTemplate));
-$.template('foo', tmplTemplate);
+    },
+    tests = {
+        simple: {
+            data: {name:'a'},
+            doTTemplate: '{{= it.name }}',
+            tmplTemplate: '${name}'
+        },
+        normal: {
+            data:[
+                {name:'Paul', age:16},
+                {name:'Jean', age:20},
+                {name:'Henri', age:30},
+                {name:'Simon', age:60}
+            ],
+            doTTemplate: '<p>{{= it.name }} {{ if (it.age < 18) { }} yes {{ } else { }} no {{ } }}</p>',
+            tmplTemplate: '<p>${name} {{if age < 18}} yes {{else}} no {{/if}}</p>'
+        },
+        complex: {
+            data:[{
+                name:'John',
+                age:50,
+                children: [
+                    {name:'Jane', age:16},
+                    {name:'Jean', age:14},
+                    {name:'Paul', age:6}
+                ]
+            }, {
+                name:'Sean',
+                age:30,
+                children: [
+                    {name:'Tony', age:3}
+                ]
+            }],
+            doTTemplate:'',
+            tmplTemplate:''
+        }
+    },
+    test = 'simple';
 
 // doTemplate test
 suite.add('jQuery.doTemplate', function() {
-   $doTemplate.compile({
-        source: doTTemplate, 
-        data:data
-    }).appendTo(doTDiv);
+   $.doTemplate(tests[test].doTTemplate, tests[test].data).appendTo(doTDiv);
 })
 
 // tmpl test
 .add('jQuery.tmpl', function() {
-    $.tmpl('foo', data).appendTo(tmplDiv);
+    $.tmpl(tests[test].tmplTemplate, tests[test].data).appendTo(tmplDiv);
 })
 
 // display result when all test are done
@@ -80,9 +100,6 @@ suite.add('jQuery.doTemplate', function() {
 
         $(':button:not(#abort)').removeProp('disabled');
 
-        console.log(tmplDiv);
-        console.log(doTDiv);
-
     } else {
 
         iterationNb++;
@@ -116,8 +133,15 @@ suite.add('jQuery.doTemplate', function() {
     };
 });
 
+// Some interface setups
 $('#doTTemplate').text(doTTemplate);
 $('#tmplTemplate').text(tmplTemplate);
+
+$('#template').change(function() {
+    test = $(this).val();
+    $('#doTTemplate').text(tests[test].doTTemplate);
+    $('#tmplTemplate').text(tests[test].tmplTemplate);
+}).change();
 
 $('#run').click(function() {
     resetDiv();
