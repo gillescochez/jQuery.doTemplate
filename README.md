@@ -9,6 +9,7 @@ Also it doesn't store templates for you, but as each template is an object you c
 
 * [Dependencies](#dependencies)
 * [Features doT](#features-dot)
+* [Settings doT](#settings-dot)
 * [Builder API](#builder-api)
 * [Template API](#template-api)
 * [Installation](#installation)
@@ -36,6 +37,26 @@ Also it doesn't store templates for you, but as each template is an object you c
 * streaming friendly
 
 view the [doT examples](https://github.com/olado/doT/tree/master/examples) to see advanced template syntax
+
+## Settings doT
+
+All the settings exposed are used by doT engine and allows you to customize the template engine.
+You can set your own delimiters by updating the regex experssions.
+
+```javascript
+
+$.doTemplate.settings = {
+    evaluate: /\{\{([\s\S]+?)\}\}/g, // {{ }}
+    interpolate: /\{\{=([\s\S]+?)\}\}/g, // {{= }}
+    encode: /\{\{!([\s\S]+?)\}\}/g, // {{! }}
+    use: /\{\{#([\s\S]+?)\}\}/g, // {{# }}
+    define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g, // {{## }}
+    varname: 'it', // e.g. {{= it.name }}
+    strip : true, // strip white space
+    append: true
+};
+
+```
 
 ## Builder API
 

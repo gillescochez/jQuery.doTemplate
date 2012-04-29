@@ -6,6 +6,8 @@ $.doTemplate = (function() {
         this.source = config.source;
         this.data = config.data;
 
+        if (this.source) this.compiler = $.doTemplate.engine(this.source);
+
         if (this.data) this.compile(config.data);
         else this.compiled = null;
         
@@ -20,7 +22,7 @@ $.doTemplate = (function() {
         
             var frag = document.createDocumentFragment(),
                 tmp = document.createElement('div'),
-                compiler = $.doTemplate.engine(this.source),
+                compiler = this.compiler || $.doTemplate.engine(this.source),
                 compiled_src, $item,
                 add = function(i, object) {
                 

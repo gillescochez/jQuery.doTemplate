@@ -7,6 +7,7 @@ var suite = new Benchmark.Suite,
 
     doTTemplate = '{{= it.name }}',
     tmplTemplate = '${name}',
+    $doTemplate = $.doTemplate(doTTemplate), 
     iteration, iterationNb,
     count = {
         'jQuery.doTemplate': 0,
@@ -27,10 +28,12 @@ var suite = new Benchmark.Suite,
             delay: 500
         });
     };
+console.log($.doTemplate(doTTemplate));
+$.template('foo', tmplTemplate);
 
 // doTemplate test
 suite.add('jQuery.doTemplate', function() {
-   $.doTemplate({
+   $doTemplate.compile({
         source: doTTemplate, 
         data:data
     }).appendTo(doTDiv);
@@ -38,7 +41,7 @@ suite.add('jQuery.doTemplate', function() {
 
 // tmpl test
 .add('jQuery.tmpl', function() {
-    $.tmpl(tmplTemplate, data).appendTo(tmplDiv);
+    $.tmpl('foo', data).appendTo(tmplDiv);
 })
 
 // display result when all test are done
@@ -75,7 +78,10 @@ suite.add('jQuery.doTemplate', function() {
             if ($(this).text() == fastest) $(this).parents('table').addClass('fastest');
         });
 
-        $(':button:not(#abort)').removeProp('disabled'); 
+        $(':button:not(#abort)').removeProp('disabled');
+
+        console.log(tmplDiv);
+        console.log(doTDiv);
 
     } else {
 
