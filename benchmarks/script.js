@@ -70,7 +70,7 @@ suite.add('jQuery.doTemplate', function() {
             use: /\{\{#([\s\S]+?)\}\}/g,
             define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
             strip : false,
-            append: false
+            append: true
         }
    }).appendTo(doTDiv);
 

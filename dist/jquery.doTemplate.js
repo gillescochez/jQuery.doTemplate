@@ -231,7 +231,7 @@ $.doTemplate.engine = (function() {
         .split("out+='';").join('')
         .split("var out='';out+=").join('var out=');
 
-        try { return new Function('$.extend(this,arguments[0]);' + str); } catch (e) { throw e; }
+        try { return new Function('for(var n in arguments[0]) this[name] = arguments[0][name];delete n;' + str); } catch (e) { throw e; }
     };
 })();
 
