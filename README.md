@@ -25,14 +25,14 @@ The core function that serve new template object based on arguments provided.
 ```javascript
 
     // pass source and data as arguments
-    $.doTemplate('<p>{{= name }}</p>', [{name:'John'},{name:'Jack'}]).appendTo('#names');
+    $.doTemplate('<p>${name}</p>', [{name:'John'},{name:'Jack'}]).appendTo('#names');
 
     // or
 
     // pass a configuration object
     $.doTemplate({
         data: [{name:'John'},{name:'Jack'}],
-        source: '<p>{{= name }}</p>',
+        source: '<p>${name}</p>',
     })
     .appendTo('#names');
 
@@ -41,7 +41,7 @@ The core function that serve new template object based on arguments provided.
     $.doTemplate(element);
 
     // if a source is passed first it will be used instead of the original template
-    $.doTemplate('<div>{{= name }}</div>', element).appendTo('#itemId');
+    $.doTemplate('<div>${name}</div>', element).appendTo('#itemId');
 
 
 ```
@@ -68,7 +68,8 @@ content in the document.
 
 ### rendering methods
 
-The main rendering methods are appendTo, prependTo, insertAfter, insertBefore and replace and behave as you woudl expect. This [examples](#examples) for usage.
+The main rendering methods are appendTo, prependTo, insertAfter, insertBefore and replace and behave as you would expect them to. 
+See the [examples](#examples) for usage (append and replace are used)
 
 The render method is more of an internal helper for the methods stated above but it you want to save yourself a function call check the code to see how to use it.
 
@@ -103,18 +104,18 @@ As you would expect any jquery plugin.
 <head>
     <script type="text/doTemplate" id="listTemplate">
         <tr>
-            <td class="click">{{= name }}</td>
-            <td>{{= age }}</td>
-            <td>{{= age >= 18 ? 'yes' : 'no' }}</td>
+            <td class="click">${name}</td>
+            <td>${age}</td>
+            <td>${age >= 18 ? 'yes' : 'no'}</td>
         </tr>
     </script>
     <script type="text/doTemplate" id="itemTemplate">
         <tr>
-            <th colspan="3"><strong>{{= name }}</strong></th>
+            <th colspan="3"><strong>${name}</strong></th>
         </tr>
         <tr>
             <th>Age</th>
-            <td colspan="2">{{= age }}</td>
+            <td colspan="2">${age}</td>
         </tr>
     </script>
 </head>
@@ -184,7 +185,7 @@ var data = [
     {name: 'Jesus', age: 33},
 ];
 
-$.doTemplate('<p>{{= name }} : {{= age }}</p>', data).appendTo('#list');
+$.doTemplate('<p>${name} : ${age}</p>', data).appendTo('#list');
 	
 ```
 

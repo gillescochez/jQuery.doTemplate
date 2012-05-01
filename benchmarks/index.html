@@ -23,6 +23,7 @@ li {
     background:#f4f4f4;
     font-weight:normal;
     color:red;
+    padding:5px;
 }
 table {
     border:3px solid #ccc;
@@ -42,6 +43,11 @@ th.name {
 table.fastest th.name {
     background:lightgreen;
 }
+em {
+    color:blue;
+    display:block;
+    padding:5px;
+}
 </style>
 <body>
 <p><strong>Benchmarked using benchmark.js</strong></p>
@@ -53,14 +59,12 @@ table.fastest th.name {
     </select>
 </p>
 <ul>
-    <li>jQuery.doTemplate: <span class="snippet" id="doTTemplate"></span></li>
-    <li>jQuery.tmpl: <span class="snippet" id="tmplTemplate"></span></li>
+    <li>jQuery.doTemplate<br /><span class="snippet" id="doTTemplate"></span></li>
+    <li>jQuery.tmpl<br /><span class="snippet" id="tmplTemplate"></span></li>
 </ul>
 <p>
-    <input type="button" id="run" value="Single run" />
-    <input type="button" id="batch" value="Batch run" />: <input type="text" size="5" value="10" id="iteration" />
+    <input type="button" id="run" value="Run" /> <input type="button" id="abort" value="Abort" />
 </p>
-<p><input type="button" id="abort" value="Abort" /></p>
 <p id="status"></p>
 <div id="results"></div>
 <script src="script.js"></script>

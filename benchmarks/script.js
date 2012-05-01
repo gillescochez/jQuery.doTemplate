@@ -1,11 +1,8 @@
 var suite = new Benchmark.Suite,
     doTDiv, tmplDiv,
-    iteration, iterationNb,
-    count = {
-        'jQuery.doTemplate': 0,
-        'jQuery.tmpl': 0
-    },
-    single = true,
+
+
+
     resetDiv = function() {
         doTDiv = document.createElement('div');
         tmplDiv = document.createElement('div');
@@ -19,7 +16,7 @@ var suite = new Benchmark.Suite,
     tests = {
         simple: {
             data: {name:'Paul'},
-            doTTemplate: '{{= name }}',
+            doTTemplate: '${name}',
             tmplTemplate: '${name}'
         },
         normal: {
@@ -29,8 +26,8 @@ var suite = new Benchmark.Suite,
                 {name:'Henri', age:30},
                 {name:'Simon', age:60}
             ],
-            doTTemplate: '<p>{{= name }} {{ if (age < 18) { }} yes {{ } else { }} no {{ } }}</p>',
-            tmplTemplate: '<p>${name} {{if age < 18}} yes {{else}} no {{/if}}</p>'
+            doTTemplate:  '<p>${name} {{? age < 18}}yes{{??}}no{{?}}</p>',
+            tmplTemplate: '<p>${name} {{if age < 18}}yes{{else}}no{{/if}}</p>'
         },
         complex: {
             data:[{
@@ -48,8 +45,8 @@ var suite = new Benchmark.Suite,
                     {name:'Tony', age:3}
                 ]
             }],
-            doTTemplate:'',
-            tmplTemplate:''
+            doTTemplate:'<p>${name}</p><p><b>Children:</b><ul>{{~ children :child}}<li>${child.name}: ${child.age}</li>{{~}}</ul></p>',
+            tmplTemplate:'<p>$(name}</p><p><b>Children:</b><ul>{{each children}}<li>$($Value.name}: $($Value.age}</li>{{/each}}</ul></p>'
         }
     },
     test = 'simple',
@@ -58,26 +55,13 @@ var suite = new Benchmark.Suite,
 // doTemplate test
 suite.add('jQuery.doTemplate', function() {
 
-   //$.doTemplate(tests[test].doTTemplate, tests[test].data).appendTo(doTDiv);
-
-   $.doTemplate({
-        source: tests[test].doTTemplate,
-        data: tests[test].data,
-        settings: {
-            evaluate: /\{\{([\s\S]+?)\}\}/g,
-            interpolate: /\{\{=([\s\S]+?)\}\}/g,
-            encode: /\{\{!([\s\S]+?)\}\}/g,
-            use: /\{\{#([\s\S]+?)\}\}/g,
-            define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
-            strip : false,
-            append: true
-        }
-   }).appendTo(doTDiv);
+   $.doTemplate(tests[test].doTTemplate, tests[test].data).appendTo(doTDiv);
 
    if (!firstrun) {
         firstrun = true;
         console.log(doTDiv.innerHTML);
    };
+ 
 })
 
 // tmpl test
@@ -91,74 +75,43 @@ suite.add('jQuery.doTemplate', function() {
     var str = '',
         fastest = this.filter('fastest').pluck('name').toString();
 
-    if (single) {
-
-        $.each(this, function(i, bench) {
-            
-            str += '<table><tr><th colspan="2" class="name">' + bench.name + '</th></tr>';
-            
-            $.each('variance moe deviation sem rme mean sample'.split(' '), function(j, v) {
-
-                str += '<tr><th>';
-
-                str += v + '</th><td>'
-
-                if (v == 'sample') str += bench.stats.sample.length;
-                else str += bench.stats[v];
-
-                str += '</td></tr>';
-            });
-
-            str += '</table>';
-        });
-
-        $('#status').toggleClass('running').html('Done! Fastest is <strong>' + fastest + '</strong>');
+    $.each(this, function(i, bench) {
         
-        $('#results').html(str + '</table>')
-        .find('th.name').each(function() { 
-            if ($(this).text() == fastest) $(this).parents('table').addClass('fastest');
-        });
+        str += '<table><tr><th colspan="2" class="name">' + bench.name + '</th></tr>';
+        
+        $.each('variance moe deviation sem rme mean sample'.split(' '), function(j, v) {
 
-        $(':button:not(#abort)').removeProp('disabled');
+            str += '<tr><th>';
 
-    } else {
+            str += v + '</th><td>'
 
-        iterationNb++;
+            if (v == 'sample') str += bench.stats.sample.length;
+            else str += bench.stats[v];
 
-        if (fastest.indexOf('jQuery.doTemplate') !== -1) count['jQuery.doTemplate']++;
-        if (fastest.indexOf('jQuery.tmpl') !== -1) count['jQuery.tmpl']++;
-
-        str += '<table>';
-
-        $.each(count, function(k, v) {
-            str += '<tr><th class="name">' + k+ '</th><td>' + v + '</td></tr>';
+            str += '</td></tr>';
         });
 
         str += '</table>';
+    });
 
-        $('#results').html(str);
+    $('#status').toggleClass('running').html('Done! Fastest is <strong>' + fastest + '</strong>');
+    
+    $('#results').html(str + '</table>')
+    .find('th.name').each(function() { 
+        if ($(this).text() == fastest) $(this).parents('table').addClass('fastest');
+    });
 
-        if (iteration !== iterationNb) {
-            
-            resetDiv();
-            suite.reset();
+    $(':button:not(#abort)').removeProp('disabled');
 
-            // give the system a quick reset before running again
-            setTimeout(function() {
-                run();
-            }, 5000);
-        } else {
-            $('#status').html('Done!');
-            $(':button:not(#abort)').removeProp('disabled');
-        };
-    };
+    suite.reset();
+
 });
 
 // Some interface setups
 $('#template').change(function() {
     test = $(this).val();
-    $('#doTTemplate').text(tests[test].doTTemplate);
-    $('#tmplTemplate').text(tests[test].tmplTemplate);
+    $('#doTTemplate').empty().text(tests[test].doTTemplate).append('<em>length: '+ tests[test].doTTemplate.length + '</em>');
+    $('#tmplTemplate').empty().text(tests[test].tmplTemplate).append('<em>length: '+ tests[test].tmplTemplate.length + '</em>');
 }).change();
 
 $('#run').click(function() {
@@ -169,20 +122,6 @@ $('#run').click(function() {
     $('#results').empty();
     $('#status').html('Running...');
     $(':button:not(#abort)').prop('disabled', true);
-    run();
-});
-
-$('#batch').click(function() {
-    
-    single = false;
-    firstrun = false;
-
-    iteration = parseInt($('#iteration').val());
-    iterationNb = 0;
-
-    $('#results').empty();
-    $('#status').html('Running...');
-    $(':button:not(#abort)').prop('disabled', true); 
     run();
 });
 

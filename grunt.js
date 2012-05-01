@@ -10,7 +10,7 @@ module.exports = function(grunt) {
             '<banner>',
             'src/head.js',
             'src/core.js',
-            'src/template.js',
+            'src/engine.js',
             'src/plugin.js',
             'src/foot.js'
         ],
