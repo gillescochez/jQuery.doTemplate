@@ -27,38 +27,50 @@ $.extend(doTemplate.prototype, {
     // compile data using the compiler
     compile: function(data) {
      
+        // sort the compiler out
         this.compiler = this.compiler || $.doTemplate.engine(this.source);
 
+        var self = this,
+            frag = document.createDocumentFragment(),
+            tmp = document.createElement('span'),
+            compiled_source, $item;
 
-        var frag = document.createDocumentFragment(),
-            tmp = document.createElement('div'),
-            compiler = this.compiler,
-            compiled_source, $item,
-            add = function(i, object) {
-
-                compiled_source = compiler(object);
-                
-                // create a jQuery object
-                $item = $(compiled_source);
-
-                // is there some DOM? If not assume text and use a textNode instead 
-                if (!$item[0]) $item = $(document.createTextNode(compiled_source));
-                
-                $item.data('doTemplate', {
-                    source: this.source,
-                    data: object
-                }).each(function() {
-                    frag.appendChild(this);
-                });
-            };
-                    
         // handle correct data
         data = data || this.data || null;
         if (!data) return this;
         
         // force data into an array if needed
         if (data.constructor != Array) data = [data];
-        $.each(data, add);
+
+        $.each(data,  function(i, object) {
+
+           // compiled_source = self.compiler(object);
+            
+            tmp.innerHTML = self.compiler(object);
+
+            while (tmp.childNodes.length) {
+                tmp.childNodes[0].doTemplate = {
+                    data: object,
+                    source: self.source
+                };
+                frag.appendChild(tmp.childNodes[0]);
+            };
+
+            /*
+            // create a jQuery object
+            $item = $(compiled_source);
+
+            // is there some DOM? If not assume text and use a textNode instead 
+            if (!$item[0]) $item = $(document.createTextNode(compiled_source));
+            
+            $item.data('doTemplate', {
+                source: this.source,
+                data: object
+            }).each(function() {
+                frag.appendChild(this);
+            });
+            */
+        });
         
         // store compiled version as jQuery object (so we can clone it on render)
         this.compiled = $(frag);
@@ -175,13 +187,13 @@ $.doTemplate._ = function(elem) {
             evaluate: true,
             interpolate: true,
             encode: true,
-            use: false,
-            define: false,
+            use: true,
+            define: true,
             conditional: true,
             iterate: true,
             shorttag: true,
             strip: true,
-            append: false,
+            append: true,
             selfcontained: false,
             varname: false
         },
@@ -289,7 +301,7 @@ $.doTemplate._ = function(elem) {
 
         try {
             // if no varname is requested we insert an extend call to make the data global in the function scope
-            if (!c.varname) return new Function('$.extend(this,arguments[0]);' + str);
+            if (!c.varname) return new Function('this.$=jQuery;$.extend(this,arguments[0]);' + str);
             else return new Function(c.varname, str);
         } catch (e) {
             if (window.console) console.log("Could not create a template function: " + str);
