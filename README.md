@@ -1,25 +1,24 @@
-## jQuery.doTemplate
+# jQuery.doTemplate
 
-$.doTemplate is a jQuery template plugin build around the high performance [doT](#credits) template engine, which is where the name come from and, well, it clearly state what it does too :)
+doTemplate is a jQuery template plugin build around the high performance [doT](#credits) template engine, which is where the name come from and, well, it clearly state what it does too :)
 
 It provides similar features than jQuery.tmpl but aims to provide a simplier API and better performance, butit doesn't allow you to store templates. 
 However this is easily done as template object can be cached, reused and even served as base for a new template creation.
 
 Best thing is to try it and make your own mind, hopefully there is enough below to help you get started :)
 
-### Menu
+# Menu
 
 * [Builder API](#builder-api)
 * [Template API](#template-api)
 * [Installation](#installation)
 * [Examples](#examples)
 * [Template tags](#template-tags)
-** [${} and {{= }}](#interpolation)
 * [Credits](#credits)
 
-## Builder API
+# Builder API
 
-### jQuery.doTemplate();
+## jQuery.doTemplate();
 
 The core function that serve new template object based on arguments provided.
 
@@ -47,7 +46,7 @@ The core function that serve new template object based on arguments provided.
 
 ```
 
-### jQuery().doTemplate();
+## jQuery().doTemplate();
 
 This is an helper function which return a template object created using the element contents
 
@@ -62,19 +61,19 @@ This is an helper function which return a template object created using the elem
 
 ```
 
-## Template API
+# Template API
 
 The template builder methods return a template object. That object has an API to simplify the rendering of compiled
 content in the document.
 
-### rendering methods
+## rendering methods
 
 The main rendering methods are appendTo, prependTo, insertAfter, insertBefore and replace and behave as you would expect them to. 
 See the [examples](#examples) for usage (append and replace are used)
 
 The render method is more of an internal helper for the methods stated above but it you want to save yourself a function call check the code to see how to use it.
 
-### compiling new data
+## compiling new data
 
 You can update an already created template by using the compile method and passing it the new data as seen below.
 
@@ -85,7 +84,7 @@ tmpl.compile(newData).appendTo('#target2'); // append the newly compiled data to
 
 ```
 
-## Installation
+# Installation
 
 As you would expect any jquery plugin.
 
@@ -96,9 +95,9 @@ As you would expect any jquery plugin.
 
 ```
 
-## Examples
+# Examples
 
-### Using script tags to store templates
+## Using script tags to store templates
 
 ```html
 
@@ -176,7 +175,7 @@ setTimeout(function() {
 
 ```
 
-### Using strings as template
+## Using strings as template
 
 ```javascript
 
@@ -190,9 +189,11 @@ $.doTemplate('<p>${name} : ${age}</p>', data).appendTo('#list');
 	
 ```
 
-### Syntax
+# Template tags
 
-#### Interpolation
+Templates tags are used to insert logic into your templates.
+
+## Interpolation tag
 
 Print out data value. This can be done using the short or long tag.
 
@@ -208,10 +209,78 @@ Accessing Object: ${object.foo}
 
 Conditional: ${isRed ? 'red' : 'white'}
 
+```
+
+## Conditional statement tag
+
+The conditional statement tags allows you to create if / else like statetement inside your templates
+
+```html
+
+If / Else
+
+{{? red}}
+    do something
+{{??}}
+    do something else
+{{?}}
+
+If / Elseif / Else
+
+{{? red}}
+    do something
+{{?? blue}}
+    do something else
+{{??}}
+    do something else
+{{?}}
+
 
 ```
 
-Using 
+## Iteration tag
+
+The iteration tags can be used to loop through arrays and objects from the template file. Iteration tags can be nested.
+
+```html
+
+<ul>
+    {{~ items :item }}
+        {{~ item :link }}
+            <li><a href="${link.href}" title="${link.title}">${link.label}</a></li>
+        {{~}}
+    {{~}}
+</ul>
+
+
+```
+
+## Evaluation tag
+
+The evaluation tag allows you to run pure javascript inside your template.
+
+```html
+
+{{ if (red) { }}
+    red
+{{ } else { }}
+    white
+{{ } }}
+
+```
+
+## Enconding tag
+
+The encoding tag will encode its body so everything is render as it is inside the browser (useful to print out html code)
+
+```
+{{! The tag <strong> is strong }}
+
+```
+
+
+
+## 
 
 ## Credits
 
