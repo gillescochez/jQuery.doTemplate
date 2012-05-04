@@ -292,15 +292,18 @@ Firefox and Chrome are tested on both Windows and Linux.
 
 ### Chrome
 
-On the 3 templates tested jQuery.doTemplate is always the fastest.
+On the 3 templates tested jQuery.doTemplate is always the fastest on the Linux platform, on Windows they are about the same.
 
 ### Firefox
 
-For interpolation and iteration template jQuery.doTemplate is always the fastest.
-For the conditional statement jQuery.tmpl is often the fastest, rarely does jQuery.doTemplate match it or is faster
+On windows jQuery.doTemplate is always the fastest.
+On Linux for the conditional statement test jQuery.tmpl is often the fastest and in rare occasion jQuery.doTemplate, other tests are the same than on Windows
 
 ### Internet Explorer
 
+#### IE9
+
+On IE9 jQuery.tmpl seems to often be the fastest.
 
 ### Opera
 
