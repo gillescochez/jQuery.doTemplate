@@ -47,12 +47,19 @@ var suite = new Benchmark.Suite,
         }
     },
     test = 'simple',
-    firstrun = false;
+    firstrun = false,
+    doTemplate,
+    tmpl = 'simple';
+
+for (var i in tests) {
+    $.template(i, i.tmplTemplate);
+}
 
 // doTemplate test
 suite.add('jQuery.doTemplate', function() {
 
-   $.doTemplate(tests[test].doTTemplate, tests[test].data).appendTo(doTDiv);
+   //$.doTemplate(tests[test].doTTemplate, tests[test].data).appendTo(doTDiv);
+   doTemplate.compile(tests[test].data).appendTo(doTDiv);
 
    if (!firstrun) {
         firstrun = true;
@@ -107,6 +114,10 @@ suite.add('jQuery.doTemplate', function() {
 // Some interface setups
 $('#template').change(function() {
     test = $(this).val();
+    
+    doTemplate = $.doTemplate(tests[test].doTTemplate);
+    tmpl = test;
+
     $('#doTTemplate').text(tests[test].doTTemplate + ' length: '+ tests[test].doTTemplate.length);
     $('#tmplTemplate').text(tests[test].tmplTemplate + ' length: '+ tests[test].tmplTemplate.length);
 }).change();
