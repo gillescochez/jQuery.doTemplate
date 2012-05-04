@@ -80,7 +80,7 @@
         }
         else str = tmpl;
 
-        str = ("var out='" + (c.strip ? str.replace(/(^|\r|\n)\t* +| +\t*(\r|\n|$)/g,' ').replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]|(\/\*[\s\S]*?\*\/)/g, '') : str)
+        str = ("var out='" + (c.strip ? str.replace(/(^|\r|\n)\t* +| +\t*(\r|\n|$)/g,' ').replace(/\r|\n|\t|\/\*[\s\S]*?\*\//g,''): str)
             .replace(/'|\\/g, '\\$&')
             .replace(c.shorttag ? /\$\{([^\}]*)\}/g : skip, "{{=$1}}") 
             .replace(c.interpolate ? /\{\{=([\s\S]+?)\}\}/g : skip, function(m, code) {
