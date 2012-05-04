@@ -13,7 +13,8 @@ Best thing is to try it and make your own mind, hopefully there is enough below 
 * [Template API](#template-api)
 * [Installation](#installation)
 * [Examples](#examples)
-* [Benchmarks](#benchmarks)
+* [Template tags](#template-tags)
+** [${} and {{= }}](#interpolation)
 * [Credits](#credits)
 
 ## Builder API
