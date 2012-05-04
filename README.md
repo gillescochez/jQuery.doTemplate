@@ -2,8 +2,8 @@
 
 doTemplate is a jQuery template plugin build around the high performance [doT](#credits) template engine, which is where the name come from and, well, it clearly state what it does too :)
 
-It provides similar features than jQuery.tmpl but aims to provide a simplier API and better performance, butit doesn't allow you to store templates. 
-However this is easily done as template object can be cached, reused and even served as base for a new template creation.
+It provides similar features than jQuery.tmpl but aims to provide a simplier API and better performances.
+The compiled template function is cached automatically for better performance so you don't have to worry about that.
 
 Best thing is to try it and make your own mind, hopefully there is enough below to help you get started :)
 
@@ -12,8 +12,9 @@ Best thing is to try it and make your own mind, hopefully there is enough below 
 * [Builder API](#builder-api)
 * [Template API](#template-api)
 * [Installation](#installation)
-* [Examples](#examples)
 * [Template tags](#template-tags)
+* [Examples](#examples)
+* [Benchmarks](#benchmarks)
 * [Credits](#credits)
 
 # Builder API
@@ -89,9 +90,89 @@ tmpl.compile(newData).appendTo('#target2'); // append the newly compiled data to
 As you would expect any jquery plugin.
 
 ```html
-
 <script src="jquery.min.js"></script>
 <script src="jquery.doTemplate.min.js"></script>
+```
+
+
+# Template tags
+
+Templates tags are used to insert logic into your templates.
+
+## Interpolation tag
+
+Print out data value. This can be done using the short or long tag.
+
+If you use the long tag and disable the shorttag usage it will increase performance slightly as the engine convert the short into long before processing it.
+
+```html
+Short tag: ${var}
+Long tag: {{=var}}
+
+Accessing Array: ${array[0]}
+Accessing Object: ${object.foo}
+
+Conditional: ${isRed ? 'red' : 'white'}
+```
+
+## Conditional statement tag
+
+The conditional statement tags allows you to create if / else like statetement inside your templates
+
+```html
+If / Else
+
+{{? red}}
+    do something
+{{??}}
+    do something else
+{{?}}
+
+If / Elseif / Else
+
+{{? red}}
+    do something
+{{?? blue}}
+    do something else
+{{??}}
+    do something else
+{{?}}
+```
+
+## Iteration tag
+
+The iteration tags can be used to loop through arrays and objects from the template file. Iteration tags can be nested.
+
+```html
+<ul>
+    {{~ items :item }}
+        {{~ item :link }}
+            <li><a href="${link.href}" title="${link.title}">${link.label}</a></li>
+        {{~}}
+    {{~}}
+</ul>
+```
+
+## Evaluation tag
+
+The evaluation tag allows you to run pure javascript inside your template.
+
+```html
+
+{{ if (red) { }}
+    red
+{{ } else { }}
+    white
+{{ } }}
+
+```
+
+## Enconding tag
+
+The encoding tag will encode its body so everything is render as it is inside the browser (useful to print out html code)
+
+```
+{{! The tag <strong> is strong }}
 
 ```
 
@@ -100,7 +181,6 @@ As you would expect any jquery plugin.
 ## Using script tags to store templates
 
 ```html
-
 <head>
     <script type="text/doTemplate" id="listTemplate">
         <tr>
@@ -135,11 +215,9 @@ As you would expect any jquery plugin.
     <tbody id="list2"></tbody>
 </table>
 </body>
-
 ```
 
 ```javascript
-
 var data = [
     {name: 'Paul', age: 22},
     {name: 'Edouard', age: 13},
@@ -172,116 +250,62 @@ setTimeout(function() {
     ]).appendTo('#list2');
 
 }, 500);
-
 ```
 
 ## Using strings as template
 
 ```javascript
-
 var data = [
     {name: 'Paul', age: 22},
     {name: 'Edouard', age: 13},
     {name: 'Jesus', age: 33},
 ];
 
-$.doTemplate('<p>${name} : ${age}</p>', data).appendTo('#list');
-	
+$.doTemplate('<p>${name} : ${age}</p>', data).appendTo('#list');	
 ```
+# Benchmarks
 
-# Template tags
+Benchmarks are made using benchmark.js and for the moment are quite simple.
 
-Templates tags are used to insert logic into your templates.
+jQuery.templ and jQuery.doTemplate are both being tested with the template function cached so that the result analyse only
+the compiling data and insertion performance (using appendTo)
 
-## Interpolation tag
+Only 3 template strings are test for now:
 
-Print out data value. This can be done using the short or long tag.
+* basic interpolation using the short tag
+* basic conditional statement
+* basic iteration
 
-If you use the long tag and disable the shorttag usage it will increase performance slightly as the engine convert the short into long before processing it.
+## System tested on
 
-```html
+Xubuntu / Windows 7
 
-Short tag: ${var}
-Long tag: {{=var}}
+AMD 6 x 2.3Ghz
+4GB DDR2
 
-Accessing Array: ${array[0]}
-Accessing Object: ${object.foo}
+## Obvservations
 
-Conditional: ${isRed ? 'red' : 'white'}
+I have done the benchmarks A LOT during the development process, obvservation are not based on single runs, but they
+are based on my single experience so far.
 
-```
+Firefox and Chrome are tested on both Windows and Linux.
 
-## Conditional statement tag
+### Chrome
 
-The conditional statement tags allows you to create if / else like statetement inside your templates
+On the 3 templates tested jQuery.doTemplate is always the fastest.
 
-```html
+### Firefox
 
-If / Else
+For interpolation and iteration template jQuery.doTemplate is always the fastest.
+For the conditional statement jQuery.tmpl is often the fastest, rarely does jQuery.doTemplate match it or is faster
 
-{{? red}}
-    do something
-{{??}}
-    do something else
-{{?}}
-
-If / Elseif / Else
-
-{{? red}}
-    do something
-{{?? blue}}
-    do something else
-{{??}}
-    do something else
-{{?}}
+### Internet Explorer
 
 
-```
-
-## Iteration tag
-
-The iteration tags can be used to loop through arrays and objects from the template file. Iteration tags can be nested.
-
-```html
-
-<ul>
-    {{~ items :item }}
-        {{~ item :link }}
-            <li><a href="${link.href}" title="${link.title}">${link.label}</a></li>
-        {{~}}
-    {{~}}
-</ul>
-
-
-```
-
-## Evaluation tag
-
-The evaluation tag allows you to run pure javascript inside your template.
-
-```html
-
-{{ if (red) { }}
-    red
-{{ } else { }}
-    white
-{{ } }}
-
-```
-
-## Enconding tag
-
-The encoding tag will encode its body so everything is render as it is inside the browser (useful to print out html code)
-
-```
-{{! The tag <strong> is strong }}
-
-```
+### Opera
 
 
 
-## 
-
-## Credits
+# Credits
 
 The template engine is powered by [doT.js](http://olado.github.com/doT/), written by [Laura Doktorova](https://github.com/olado).
