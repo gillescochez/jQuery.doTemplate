@@ -13,14 +13,19 @@
             conditional: true,
             iterate: true,
             shorttag: true,
-            varname: false,
             strip: true,
             append: true,
-            selfcontained: false
+            selfcontained: false,
+            varname: false
         },
         template: undefined
     },
-    global = (function(){ return this || (0||eval)('this'); }());
+    global = (function(){ return this || (0||eval)('this'); }()),
+    startend = {
+        append: { start: "'+(",      end: ")+'",      startencode: "'+encodeHTML(" },
+        split:  { start: "';out+=(", end: ");out+='", startencode: "';out+=encodeHTML("}
+    },
+    skip = /$^/;
 
     function encodeHTMLSource() {
         var encodeHTMLRules = { "&": "&#38;", "<": "&#60;", ">": "&#62;", '"': '&#34;', "'": '&#39;', "/": '&#47;' },
@@ -32,13 +37,8 @@
     
     global.encodeHTML = encodeHTMLSource();
 
-    var startend = {
-        append: { start: "'+(",      end: ")+'",      startencode: "'+encodeHTML(" },
-        split:  { start: "';out+=(", end: ");out+='", startencode: "';out+=encodeHTML("}
-    }, skip = /$^/;
-
     function resolveDefs(c, block, def) {
-        return ((typeof block === 'string') ? block : block.toString())
+        return (typeof block == 'string' ? block : block.toString())
         .replace(c.define ? /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g : skip, function(m, code, assign, value) {
             if (code.indexOf('def.') === 0) {
                 code = code.substring(4);
@@ -67,15 +67,18 @@
         c = c || doT.templateSettings;
 
         var cse = c.append ? startend.append : startend.split, 
-            str, needhtmlencode, indv,
+            str, needhtmlencode, indv, olddef,
             sid = 0;
 
         if (c.use || c.define) {
-            var olddef = global.def; 
+
+            olddef = global.def; 
+
             global.def = def || {}; // workaround minifiers
             str = resolveDefs(c, tmpl, global.def);
             global.def = olddef;
-        } else str = tmpl;
+        }
+        else str = tmpl;
 
         str = ("var out='" + (c.strip ? str.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]|(\/\*[\s\S]*?\*\/)/g, '') : str)
             .replace(/'|\\/g, '\\$&')
@@ -122,7 +125,7 @@
             if (!c.varname) return new Function('this.$=jQuery;$.extend(this,arguments[0]);' + str);
             else return new Function(c.varname, str);
         } catch (e) {
-            if (typeof console !== 'undefined') console.log("Could not create a template function: " + str);
+            if (window.console) console.log("Could not create a template function: " + str);
             throw e;
         }
     };

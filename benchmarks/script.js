@@ -1,8 +1,5 @@
 var suite = new Benchmark.Suite,
     doTDiv, tmplDiv,
-
-
-
     resetDiv = function() {
         doTDiv = document.createElement('div');
         tmplDiv = document.createElement('div');
@@ -110,13 +107,12 @@ suite.add('jQuery.doTemplate', function() {
 // Some interface setups
 $('#template').change(function() {
     test = $(this).val();
-    $('#doTTemplate').empty().text(tests[test].doTTemplate).append('<em>length: '+ tests[test].doTTemplate.length + '</em>');
-    $('#tmplTemplate').empty().text(tests[test].tmplTemplate).append('<em>length: '+ tests[test].tmplTemplate.length + '</em>');
+    $('#doTTemplate').text(tests[test].doTTemplate + ' length: '+ tests[test].doTTemplate.length);
+    $('#tmplTemplate').text(tests[test].tmplTemplate + ' length: '+ tests[test].tmplTemplate.length);
 }).change();
 
 $('#run').click(function() {
     resetDiv();
-    single = true;
     firstrun = false;
     $('#iterationCount').text('');
     $('#results').empty();

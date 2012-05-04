@@ -155,7 +155,7 @@ $('td.click').live('click', function() {
     
     
     // here doTemplate will grab the doTemplate object store when the element, this, was created and compile its data with the new source
-    // as it was in a loop this allow use to render a single row without any hassle
+    // as it was in a loop this allow us to render a single row without any hassle
     .doTemplate(this)
     
     // we use the replace function to replace the old row
@@ -189,24 +189,28 @@ $.doTemplate('<p>${name} : ${age}</p>', data).appendTo('#list');
 	
 ```
 
-### Benchmarks
+### Syntax
 
-Benchmarks are made using benchmark.js with a quickly put together interface to reports results and add the ability to run multiple
-test in on go and be able to track which plugin was the fastest. If the result of benchmark.js is both are as fast then both plugin count
-is increased (which mean the total of both can be higher than the number of iteration)
+#### Interpolation
 
-This is the only 2 line benchmarked so far.
+Print out data value. This can be done using the short or long tag.
 
-```javascript
+If you use the long tag and disable the shorttag usage it will increase performance slightly as the engine convert the short into long before processing it.
 
-jquery.tmpl(templateString, data).appendTo(div);
+```html
 
-$.doTemplate(templateString, data).appendTo(div);
+Short tag: ${var}
+Long tag: {{=var}}
+
+Accessing Array: ${array[0]}
+Accessing Object: ${object.foo}
+
+Conditional: ${isRed ? 'red' : 'white'}
+
 
 ```
 
-So far jQuery.doTemplate is always faster than jquery.tmpl on FF, Chrome and IE9. 
-Chrome and FF are tested on both windows and linux platform (chromium-browser on linux)
+Using 
 
 ## Credits
 
