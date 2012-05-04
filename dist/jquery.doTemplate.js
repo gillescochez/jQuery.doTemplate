@@ -26,10 +26,13 @@ $.extend(doTemplate.prototype, {
 
     // compile data using the compiler
     compile: function(data) {
-    
+     
+        this.compiler = this.compiler || $.doTemplate.engine(this.source);
+
+
         var frag = document.createDocumentFragment(),
             tmp = document.createElement('div'),
-            compiler = this.compiler || $.doTemplate.engine(this.source),
+            compiler = this.compiler,
             compiled_source, $item,
             add = function(i, object) {
 
@@ -172,13 +175,13 @@ $.doTemplate._ = function(elem) {
             evaluate: true,
             interpolate: true,
             encode: true,
-            use: true,
-            define: true,
+            use: false,
+            define: false,
             conditional: true,
             iterate: true,
             shorttag: true,
             strip: true,
-            append: true,
+            append: false,
             selfcontained: false,
             varname: false
         },
@@ -286,7 +289,7 @@ $.doTemplate._ = function(elem) {
 
         try {
             // if no varname is requested we insert an extend call to make the data global in the function scope
-            if (!c.varname) return new Function('this.$=jQuery;$.extend(this,arguments[0]);' + str);
+            if (!c.varname) return new Function('$.extend(this,arguments[0]);' + str);
             else return new Function(c.varname, str);
         } catch (e) {
             if (window.console) console.log("Could not create a template function: " + str);

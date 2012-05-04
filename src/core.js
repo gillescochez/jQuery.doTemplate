@@ -22,10 +22,13 @@ $.extend(doTemplate.prototype, {
 
     // compile data using the compiler
     compile: function(data) {
-    
+     
+        this.compiler = this.compiler || $.doTemplate.engine(this.source);
+
+
         var frag = document.createDocumentFragment(),
             tmp = document.createElement('div'),
-            compiler = this.compiler || $.doTemplate.engine(this.source),
+            compiler = this.compiler,
             compiled_source, $item,
             add = function(i, object) {
 

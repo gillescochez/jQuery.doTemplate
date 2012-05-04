@@ -59,7 +59,7 @@ for (var i in tests) {
 suite.add('jQuery.doTemplate', function() {
 
    //$.doTemplate(tests[test].doTTemplate, tests[test].data).appendTo(doTDiv);
-   doTemplate.compile(tests[test].data).appendTo(doTDiv);
+   doTemplate.compile(tests[test].data); //.appendTo(doTDiv);
 /*
    if (!firstrun) {
         firstrun = true;
@@ -70,7 +70,7 @@ suite.add('jQuery.doTemplate', function() {
 
 // tmpl test
 .add('jQuery.tmpl', function() {
-    $.tmpl(tests[test].tmplTemplate, tests[test].data).appendTo(tmplDiv);
+    $.tmpl(test, tests[test].data); //.appendTo(tmplDiv);
 })
 
 // display result when all test are done
@@ -114,7 +114,7 @@ suite.add('jQuery.doTemplate', function() {
 // Some interface setups
 $('#template').change(function() {
     test = $(this).val();
-    
+    delete doTemplate; 
     doTemplate = $.doTemplate(tests[test].doTTemplate);
     tmpl = test;
 
