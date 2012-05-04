@@ -2,8 +2,7 @@
 
 doTemplate is a jQuery template plugin build around the high performance [doT](#credits) template engine, which is where the name come from and, well, it clearly state what it does too :)
 
-It provides similar features than jQuery.tmpl but aims to provide a simplier API and better performances.
-The compiled template function is cached automatically for better performance so you don't have to worry about that.
+It provides similar features than jQuery.tmpl but aims to provide a simplier API and similar performances.
 
 Best thing is to try it and make your own mind, hopefully there is enough below to help you get started :)
 
@@ -276,38 +275,8 @@ Only 3 template strings are test for now:
 * basic conditional statement
 * basic iteration
 
-## System tested on
-
-Xubuntu / Windows 7
-
-AMD 6 x 2.3Ghz
-4GB DDR2
-
-## Obvservations
-
-I have done the benchmarks A LOT during the development process, obvservation are not based on single runs, but they
-are based on my single experience so far.
-
-Firefox and Chrome are tested on both Windows and Linux.
-
-### Chrome
-
-On the 3 templates tested jQuery.doTemplate is always the fastest on the Linux platform, on Windows they are about the same.
-
-### Firefox
-
-On windows jQuery.doTemplate is always the fastest.
-On Linux for the conditional statement test jQuery.tmpl is often the fastest and in rare occasion jQuery.doTemplate, other tests are the same than on Windows
-
-### Internet Explorer
-
-#### IE9
-
-On IE9 jQuery.tmpl seems to often be the fastest.
-
-### Opera
-
-
+The results varies depending on the platform and the browser used, in Linux jQuery.doTemplate is the winner, on Windows it really varies
+depending on the browser used. Here again the best thing is to run the benchmarks in the browser you use and see what you get.
 
 # Credits
 
