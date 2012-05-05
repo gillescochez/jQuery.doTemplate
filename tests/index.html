@@ -4,15 +4,15 @@
 <title>Tests</title>
 <link href="qunit.css" rel="stylesheet" type="text/css" />
 <script src="qunit.js"></script>
-<script src="jquery.js"></script>
+<script src="../lib/jquery.js"></script>
 <script src="../src/core.js"></script>
 <script src="../src/engine.js"></script>
 <script src="../src/plugin.js"></script>
 <script type="text/doTemplate" id="listTemplate">
     <tr>
-        <td class="click">{{= name }}</td>
-        <td>{{= age }}</td>
-        <td>{{= age >= 18 ? 'yes' : 'no' }}</td>
+        <td class="click">${name}</td>
+        <td>${age}</td>
+        <td>${age >= 18 ? 'yes' : 'no'}</td>
     </tr>
 </script>
 <script type="text/doTemplate" id="itemTemplate">

@@ -47,9 +47,7 @@ var suite = new Benchmark.Suite,
         }
     },
     test = 'simple',
-    firstrun = false,
-    doTemplate,
-    tmpl = 'simple';
+    doTemplate;
 
 for (var i in tests) {
     $.template(i, i.tmplTemplate);
@@ -59,19 +57,13 @@ for (var i in tests) {
 suite.add('jQuery.doTemplate', function() {
 
    //$.doTemplate(tests[test].doTTemplate, tests[test].data).appendTo(doTDiv);
-   doTemplate.compile(tests[test].data); //.appendTo(doTDiv);
-   
-
-   if (!firstrun) {
-        firstrun = true;
-        console.log(doTDiv.innerHTML);
-   };
+   doTemplate.compile(tests[test].data);
 
 })
 
 // tmpl test
 .add('jQuery.tmpl', function() {
-    $.tmpl(test, tests[test].data); //.appendTo(tmplDiv);
+    $.tmpl(test, tests[test].data);
 })
 
 // display result when all test are done
@@ -114,18 +106,14 @@ suite.add('jQuery.doTemplate', function() {
 
 // Some interface setups
 $('#template').change(function() {
-    test = $(this).val();
-    delete doTemplate; 
+    test = $(this).val(); 
     doTemplate = $.doTemplate(tests[test].doTTemplate);
-    tmpl = test;
-
     $('#doTTemplate').text(tests[test].doTTemplate + ' length: '+ tests[test].doTTemplate.length);
     $('#tmplTemplate').text(tests[test].tmplTemplate + ' length: '+ tests[test].tmplTemplate.length);
 }).change();
 
 $('#run').click(function() {
     resetDiv();
-    firstrun = false;
     $('#iterationCount').text('');
     $('#results').empty();
     $('#status').html('Running...');
@@ -136,7 +124,7 @@ $('#run').click(function() {
 $('#abort').click(function() {
     
     suite.abort();
-
+    suite.reset();
     $('#status').html('Aborted by user.');
     $(':button').removeProp('disabled');
 

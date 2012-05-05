@@ -6,12 +6,14 @@
 var doTemplate = function(config) {
 
         this.source = config.source;
-        this.data = config.data; 
+        this.data = config.data;
 
         if (this.source) this.compiler = $.doTemplate.engine(this.source);
-
-        if (this.data) this.compile(config.data);
         else this.compiled = null;
+
+        if (this.data && this.compiler) this.compile();
+
+        this.$dom = null;
         
         return this;
     },
@@ -28,82 +30,67 @@ $.extend(doTemplate.prototype, {
     compile: function(data) {
      
         // sort the compiler out
-        this.compiler = this.compiler || $.doTemplate.engine(this.source);
+        if (!this.compiler) this.compiler = $.doTemplate.engine(this.source);
 
-        var self = this,
-            frag = document.createDocumentFragment(),
-            tmp = document.createElement('span'),
-            compiled_source, $item;
+        var compiled = [],
+            source = this.source,
+            compiler = this.compiler,
+            add = function(object) {
+                compiled.push({
+                    data: object,
+                    source: source,
+                    compiler: compiler,
+                    compiled: compiler(object)
+                });
+            };
 
         // handle correct data
         data = data || this.data || null;
         if (!data) return this;
         
         // force data into an array if needed
-        if (data.constructor != Array) data = [data];
-
-        $.each(data,  function(i, object) {
-
-           // compiled_source = self.compiler(object);
-            
-            tmp.innerHTML = self.compiler(object);
-
-            while (tmp.childNodes.length) {
-                tmp.childNodes[0].doTemplate = {
-                    data: object,
-                    source: self.source
-                };
-                frag.appendChild(tmp.childNodes[0]);
-            };
-
-            /*
-            // create a jQuery object
-            $item = $(compiled_source);
-
-            // is there some DOM? If not assume text and use a textNode instead 
-            if (!$item[0]) $item = $(document.createTextNode(compiled_source));
-            
-            $item.data('doTemplate', {
-                source: this.source,
-                data: object
-            }).each(function() {
-                frag.appendChild(this);
-            });
-            */
-        });
-        
+        if (data.constructor == Array) {
+            for (var i = 0, len = data.length; i < len; i++) add(data[i]);
+        }
+        else add(data);
+       
         // store compiled version as jQuery object (so we can clone it on render)
-        this.compiled = $(frag);
+        this.compiled = compiled;
         
         return this;
-    },
-
-    appendTo: function(selector) {
-        return this.render(selector, 'append');
-    },
-
-    prependTo: function(selector) {
-        return this.render(selector, 'prepend');
-    },
-    
-    insertBefore: function(selector) {
-        return this.render(selector, 'before');
-    },
-
-    insertAfter: function(selector) {
-        return this.render(selector, 'after');
-    },
-
-    replace: function(selector) {
-        return this.render(selector, 'replaceWith');
     },
 
     render: function(selector, type) {
 
+        var dom;
+    
+        if (!this.$dom) {
+            
+            dom = $('<div />');
+
+            $.each(this.compiled, function(i, item) {
+                
+                var elem = $(item.compiled).get() || document.createTextNode(item.compiled);
+                $(elem).data('doTemplate', item);
+                dom.append(elem);
+            });
+
+            this.$dom = dom.children();
+        };
+
         // we insert a clone, inc data,  so the same compiled template can be inserted multiple time
-        $(selector)[type](this.compiled.clone(true));
+        $(selector)[type](this.$dom.clone(true));
         return this;
     }
+});
+
+$.each({appendTo: 'append', prependTo: 'prepend', insertBefore: 'before', insertAfter: 'after', replace: 'replaceWith'}, function(method, type) {
+    doTemplate.prototype[method] = function(type) {
+        //var render = this.render;
+        return function(selector) {
+            return this.render(selector, type);
+        };
+    }(type);
 });
 
 $.doTemplate = function() {
@@ -171,6 +158,7 @@ $.doTemplate._ = function(elem) {
 
     var obj;
 
+
     if (elem.jquery) elem = elem[0];
     while (elem && elem.nodeType === 1 && !(obj = $.data(elem, 'doTemplate')) && (elem = elem.parentNode)) {};
     return obj || null;
@@ -184,75 +172,78 @@ $.doTemplate._ = function(elem) {
     var doT = {
         version: '0.2.0',
         templateSettings: {
-            evaluate: true,
-            interpolate: true,
-            encode: true,
-            use: true,
-            define: true,
-            conditional: true,
-            iterate: true,
-            shorttag: true,
+            shorttag:    /\$\{([^\}]*)\}/g,
+            evaluate:    /\{\{([\s\S]+?)\}\}/g,
+            interpolate: /\{\{=([\s\S]+?)\}\}/g,
+            encode:      /\{\{!([\s\S]+?)\}\}/g,
+            use:         /\{\{#([\s\S]+?)\}\}/g,
+            define:      /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
+            conditional: /\{\{\?(\?)?\s*([\s\S]*?)\s*\}\}/g,
+            iterate:     /\{\{~\s*(?:\}\}|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\}\})/g,
+            varname: null,
             strip: true,
             append: true,
-            selfcontained: false,
-            varname: false
+            selfcontained: false
         },
         template: undefined
-    },
-    global = (function(){ return this || (0||eval)('this'); }()),
-    startend = {
-        append: { start: "'+(",      end: ")+'",      startencode: "'+encodeHTML(" },
-        split:  { start: "';out+=(", end: ");out+='", startencode: "';out+=encodeHTML("}
-    },
-    skip = /$^/;
+    };
+
+    var global = (function(){ return this || (0||eval)('this'); }());
 
     function encodeHTMLSource() {
+
         var encodeHTMLRules = { "&": "&#38;", "<": "&#60;", ">": "&#62;", '"': '&#34;', "'": '&#39;', "/": '&#47;' },
-            matchHTML = /&(?!\\w+;)|<|>|\"|'|\//g;
+            matchHTML = /&(?!\\w+;)|<|>|"|'|\//g;
+
         return function(code) {
             return code ? code.toString().replace(matchHTML, function(m) {return encodeHTMLRules[m] || m;}) : code;
         };
-    }
-    
-    global.encodeHTML = encodeHTMLSource();
+    };
+
+    var startend = {
+        append: { start: "'+(",      end: ")+'",      startencode: "'+encodeHTML(" },
+        split:  { start: "';out+=(", end: ");out+='", startencode: "';out+=encodeHTML("}
+    }, skip = /$^/;
 
     function resolveDefs(c, block, def) {
-        return (typeof block == 'string' ? block : block.toString())
-        .replace(c.define ? /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g : skip, function(m, code, assign, value) {
+
+        return ((typeof block === 'string') ? block : block.toString())
+        .replace(c.define || skip, function(m, code, assign, value) {
             if (code.indexOf('def.') === 0) {
                 code = code.substring(4);
-            }
+            };
+
             if (!(code in def)) {
                 if (assign === ':') {
                     def[code]= value;
                 } else {
                     eval("def['"+code+"']=" + value);
-                }
-            }
+                };
+            };
+
             return '';
         })
-        .replace(c.use ? /\{\{#([\s\S]+?)\}\}/g :skip, function(m, code) {
+        .replace(c.use || skip, function(m, code) {
             var v = eval(code);
             return v ? resolveDefs(c, v, def) : v;
         });
-    }
+    };
 
     function unescape(code) {
         return code.replace(/\\('|\\)/g, "$1").replace(/[\r\t\n]/g, ' ');
-    }
+    };
 
     doT.template = function(tmpl, c, def) {
 
         c = c || doT.templateSettings;
 
-        var cse = c.append ? startend.append : startend.split, 
-            str, needhtmlencode, indv, olddef,
-            sid = 0;
+        var cse = c.append ? startend.append : startend.split,
+            str, needhtmlencode, 
+            sid=0, indv;
 
         if (c.use || c.define) {
 
-            olddef = global.def; 
-
+            var olddef = global.def; 
             global.def = def || {}; // workaround minifiers
             str = resolveDefs(c, tmpl, global.def);
             global.def = olddef;
@@ -261,52 +252,48 @@ $.doTemplate._ = function(elem) {
 
         str = ("var out='" + (c.strip ? str.replace(/(^|\r|\n)\t* +| +\t*(\r|\n|$)/g,' ').replace(/\r|\n|\t|\/\*[\s\S]*?\*\//g,''): str)
             .replace(/'|\\/g, '\\$&')
-            .replace(c.shorttag ? /\$\{([^\}]*)\}/g : skip, "{{=$1}}") 
-            .replace(c.interpolate ? /\{\{=([\s\S]+?)\}\}/g : skip, function(m, code) {
+            .replace(c.shorttag || skip,'{{=$1}}')
+            .replace(c.interpolate || skip, function(m, code) {
                 return cse.start + unescape(code) + cse.end;
             })
-            .replace(c.encode ? /\{\{!([\s\S]+?)\}\}/g : skip, function(m, code) {
+            .replace(c.encode || skip, function(m, code) {
                 needhtmlencode = true;
                 return cse.startencode + unescape(code) + cse.end;
             })
-            .replace(c.conditional ? /\{\{\?(\?)?\s*([\s\S]*?)\s*\}\}/g : skip, function(m, elsecase, code) {
+            .replace(c.conditional || skip, function(m, elsecase, code) {
                 return elsecase ?
                     (code ? "';}else if(" + unescape(code) + "){out+='" : "';}else{out+='") :
                     (code ? "';if(" + unescape(code) + "){out+='" : "';}out+='");
             })
-            .replace(c.iterate ? /\{\{~\s*(?:\}\}|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\}\})/g : skip, function(m, iterate, vname, iname) {
-
-                if (!iterate) return "'} };out+='";
-
-                sid += 1; 
-                indv = iname || "i" + sid; 
-                iterate = unescape(iterate);
-
-                return "';var arr" + sid + "=" + iterate + ";if(arr" + sid + "){var " + indv + "=-1,l" + sid 
-                     + "=arr" + sid + ".length-1;while(" + indv + "<l" + sid + "){" + vname + "=arr" + sid + "[" + indv + "+=1];out+='";
+            .replace(c.iterate || skip, function(m, iterate, vname, iname) {
+                if (!iterate) return "';} } out+='";
+                sid+=1; 
+                indv=iname || "i"+sid; 
+                iterate=unescape(iterate);
+                return "';var arr"+sid+"="+iterate+";if(arr"+sid+"){var "+indv+"=-1,l"+sid+"=arr"+sid+".length-1;while("+indv+"<l"+sid+"){"+vname+"=arr"+sid+"["+indv+"+=1];out+='";
             })
-            .replace(c.evaluate ? /\{\{([\s\S]+?)\}\}/g : skip, function(m, code) {
+            .replace(c.evaluate || skip, function(m, code) {
                 return "';" + unescape(code) + "out+='";
             })
             + "';return out;")
-            .replace(/\n/g, '\\n')
-            .replace(/\t/g, '\\t')
-            .replace(/\r/g, '\\r')
-            .split("out+='';").join('')
-            .split("var out='';out+=").join('var out=');
+            .replace(/\n/g, '\\n').replace(/\t/g, '\\t').replace(/\r/g, '\\r')
+            .replace(/(\s|;|}|^|{)out\+='';/g, '$1').replace(/\+''/g, '')
+            .replace(/(\s|;|}|^|{)out\+=''\+/g,'$1out+=');
 
         if (needhtmlencode && c.selfcontained) {
             str = "var encodeHTML=(" + encodeHTMLSource.toString() + "());" + str;
-        }
+        };
 
         try {
-            // if no varname is requested we insert an extend call to make the data global in the function scope
-            if (!c.varname) return new Function('this.$=jQuery;$.extend(this,arguments[0]);' + str);
-            else return new Function(c.varname, str);
+
+            if (c.varname) return new Function(c.varname, str);
+            else return new Function('this.$=jQuery;$.extend(this,arguments[0]);' + str);
+
         } catch (e) {
-            if (window.console) console.log("Could not create a template function: " + str);
+
+            if (typeof console !== 'undefined') console.log("Could not create a template function: " + str);
             throw e;
-        }
+        };
     };
 
     // add references to $.doTemplate object

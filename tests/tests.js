@@ -25,3 +25,5 @@ test('various', function() {
     }, 500);
 
 });
+
+$.doTemplate('${name}', {name:'foo'}).appendTo('body');
