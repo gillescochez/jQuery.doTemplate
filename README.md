@@ -4,9 +4,23 @@ doTemplate is a jQuery template plugin build around the high performance [doT](#
 
 Compilation time is where doTemplate is excel, thanks to doT, the compilation results are stored as strings until they are requested to be converted to DOM (using [toDOM() method](#todom) or inserted into the dom (using the [rendering methods](#rendering-methods)).
 
-It provides similar features than jQuery.tmpl but aims to provide a simplier API and better performances (see [benchmarks](#benchmarks)).
-
 Best thing is to try it and make your own mind, hopefully there is enough below to help you get started :)
+
+## Template features
+
+All template features are as provided by doT the only changes made are the support for ${var} tag and made the template variable name optional and disabled by default.
+
+* extremely fast
+* custom delimiters
+* runtime evaluation
+* runtime interpolation
+* compile-time evaluation
+* partials support
+* conditionals support
+* array iterators
+* encoding
+* whitespace control
+* streaming friendly
 
 # Menu
 

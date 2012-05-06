@@ -47,7 +47,8 @@ var suite = new Benchmark.Suite,
         }
     },
     test = 'simple',
-    doTemplate;
+    doTemplate,
+    log = true;
 
 for (var i in tests) {
     $.template(i, i.tmplTemplate);
@@ -56,14 +57,20 @@ for (var i in tests) {
 // doTemplate test
 suite.add('jQuery.doTemplate', function() {
 
-   //$.doTemplate(tests[test].doTTemplate, tests[test].data).appendTo(doTDiv);
-   doTemplate.compile(tests[test].data);
+   doTemplate.compile(tests[test].data).appendTo(doTDiv);
+   //doTemplate.compile(tests[test].data);
+
+if (log) {
+    console.log(doTDiv.innerHTML);
+    log = false;
+};
 
 })
 
 // tmpl test
 .add('jQuery.tmpl', function() {
-    $.tmpl(test, tests[test].data);
+    $.tmpl(test, tests[test].data).appendTo(tmplDiv);
+    //$.tmpl(test, tests[test].data);
 })
 
 // display result when all test are done
@@ -113,6 +120,7 @@ $('#template').change(function() {
 }).change();
 
 $('#run').click(function() {
+    log = true;
     resetDiv();
     $('#iterationCount').text('');
     $('#results').empty();
@@ -122,7 +130,7 @@ $('#run').click(function() {
 });
 
 $('#abort').click(function() {
-    
+    resetDiv(); 
     suite.abort();
     suite.reset();
     $('#status').html('Aborted by user.');

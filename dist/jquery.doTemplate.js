@@ -5,26 +5,21 @@
 // template object constructor
 var doTemplate = function(config) {
 
-        this.source = config.source;
-        this.data = config.data;
+    this.source = config.source;
+    this.data = config.data;
 
-        if (this.source) this.compiler = $.doTemplate.engine(this.source);
-        else this.compiled = null;
+    if (this.source) this.compiler = $.doTemplate.engine(this.source);
+    else this.compiled = null;
 
-        if (this.data && this.compiler) this.compile();
+    if (this.data && this.compiler) this.compile();
 
-        this.$dom = undefined;
-        
-        return this;
-    },
-
-    // string type helper
-    isString = function(v) {
-        return v.constructor == String;
-    };
+    this.$dom = undefined;
+    
+    return this;
+};
         
 // add some inherited methods
-$.extend(doTemplate.prototype, {
+doTemplate.prototype = {
 
     // compile data using the compiler
     compile: function(data) {
@@ -32,33 +27,38 @@ $.extend(doTemplate.prototype, {
         // sort the compiler out
         if (!this.compiler) this.compiler = $.doTemplate.engine(this.source);
 
-        var items = [],
+        var res = [],
             source = this.source,
             compiler = this.compiler,
             add = function(object) {
-                items.push({
+                res.push({
                     data: object,
                     source: source,
                     compiler: compiler,
                     compiled: compiler(object)
                 });
-            };
+            },
+            i = 0,
+            len = 0;
 
         // handle correct data
         data = data || this.data || null;
-        if (!data) return this;
-        
-        // force data into an array if needed
-        if (data.constructor == Array) {
-            for (var i = 0, len = data.length; i < len; i++) add(data[i]);
-        }
-        else add(data);
-       
-        // store compiled version as jQuery object (so we can clone it on render)
-        this.items = items;
 
-        // reset the $dom cache
-        this.$dom = null;
+        if (data) {
+        
+            // force data into an array if needed
+            if (data.constructor == Array) {
+                for (len = data.length; i < len; i++) add(data[i]);
+            }
+            else add(data);
+           
+            // store compiled version as jQuery object (so we can clone it on render)
+            this.items = res;
+
+            // reset the $dom cache
+            this.$dom = null;
+
+        };
         
         // keep chain
         return this;
@@ -66,106 +66,86 @@ $.extend(doTemplate.prototype, {
 
     // convert compiled data into dom (jQuery)
     toDom: function() {
-        
-        // holder dom 
-        var dom = $(document.createElement('div'));
 
-        // loop through compiled data
-        $.each(this.items, function(i, item) {
-            var elem = $(item.compiled).get() || document.createTextNode(item.compiled);
-            $(elem).data('doTemplate', item);
-            dom.append(elem);
+        var frag = document.createDocumentFragment();
+
+        $.each(this.items, function(i, item) { 
+            $($(item.compiled).get() || document.createTextNode(item.compiled)).data('doTemplate', item).each(function() {
+                frag.appendChild(this);
+            });
         });
 
         // store DOM
-        this.$dom = dom.children();
+        this.$dom = $(frag); 
 
         // keep chain
         return this;
     },
 
-    render: function(selector, type) {
+    render: function(selector, type, clone) {
 
         // convert compiled data to DOM if needed
         if (!this.$dom) this.toDom();
 
         // we insert a clone, inc data,  so the same compiled template can be inserted multiple time
-        $(selector)[type](this.$dom.clone(true));
+        $(selector)[type](clone ? this.$dom.clone(true) : this.$dom);
 
         // keep chain
         return this;
     }
-});
-
-$.each({appendTo: 'append', prependTo: 'prepend', insertBefore: 'before', insertAfter: 'after', replace: 'replaceWith'}, function(method, type) {
-    doTemplate.prototype[method] = function(type) { 
-        return function(selector) {
-            return this.render(selector, type);
-        };
-    }(type);
-});
-
-$.doTemplate = function() {
-    
-    // reference arguments for better compression
-    var args = arguments,
-        obj, settings;
-
-    // 1 argument
-    if (args.length === 1) {
-
-        // if argument is jquery object or an element we use get to return a new template object
-        if (args[0].jquery || args[0].nodeType) {
-
-            obj = $.doTemplate._(args[0]);
-
-            settings = {
-                source: obj.source,
-                data: obj.data
-            };
-        };
-
-        // if String we assume template source
-        if (isString(args[0])) {
-            settings = {
-                source: args[0]
-            };
-        };
-        
-        // if Object we create a new template object
-        if (!settings && args[0].constructor == Object) settings = args[0];
-    };
-                
-    // 2 arguments
-    if (args.length === 2) {
-    
-        // string source, data
-        if (isString(args[0])) {
-
-            if (args[1].jquery || args[1].nodeType) {
-
-                obj = $.doTemplate._(args[1]);
-
-                settings = {
-                    source: args[0],
-                    data: obj.data
-                };
-
-            } else {
-
-                settings = {
-                    source: args[0],
-                    data: args[1]
-                };
-            };
-        };
-    };
-
-    // return a new template object
-    return new doTemplate(settings || {});        
 };
 
-// TODO Update so it can handle textNode too (not nodeType 1)
+$.each({appendTo: 'append', prependTo: 'prepend', insertBefore: 'before', insertAfter: 'after', replace: 'replaceWith'}, function(method, type) {
+    doTemplate.prototype[method] = function(selector, clone) {
+        return this.render(selector, type, clone);
+    };
+});
+
+$.doTemplate = function(source, data) {
+    
+    // reference arguments for better compression
+    var config = {},
+        obj;
+
+    // if argument is jquery object or an element we use get to return a new template object
+    if (source.jquery || source.nodeType) {
+
+        obj = $.doTemplate._(source);
+
+        config = {
+            source: obj.source,
+            data: obj.data
+        };
+    };
+
+    // if String we assume template source
+    if (typeof source  === 'string') {
+
+        if (data && (data.jquery || data.nodeType)) {
+
+            obj = $.doTemplate._(data);
+
+            config = {
+                source: source,
+                data: obj.data
+            };
+
+        } else {
+
+            config = {
+                source: source,
+                data: data
+            };
+        };
+    };
+    
+    // if Object we create a new template object
+    if (!config && source.constructor == Object) settings = source;
+
+    // return a new template object
+    return new doTemplate(config);        
+};
+
 $.doTemplate._ = function(elem) {
 
     var obj;
