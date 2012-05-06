@@ -13,7 +13,7 @@ var doTemplate = function(config) {
 
         if (this.data && this.compiler) this.compile();
 
-        this.$dom = null;
+        this.$dom = undefined;
         
         return this;
     },
@@ -32,11 +32,11 @@ $.extend(doTemplate.prototype, {
         // sort the compiler out
         if (!this.compiler) this.compiler = $.doTemplate.engine(this.source);
 
-        var compiled = [],
+        var items = [],
             source = this.source,
             compiler = this.compiler,
             add = function(object) {
-                compiled.push({
+                items.push({
                     data: object,
                     source: source,
                     compiler: compiler,
@@ -55,28 +55,32 @@ $.extend(doTemplate.prototype, {
         else add(data);
        
         // store compiled version as jQuery object (so we can clone it on render)
-        this.compiled = compiled;
+        this.items = items;
 
         // reset the $dom cache
         this.$dom = null;
         
+        // keep chain
         return this;
     },
 
     // convert compiled data into dom (jQuery)
     toDom: function() {
         
+        // holder dom 
         var dom = $(document.createElement('div'));
 
-        $.each(this.compiled, function(i, item) {
-            
+        // loop through compiled data
+        $.each(this.items, function(i, item) {
             var elem = $(item.compiled).get() || document.createTextNode(item.compiled);
             $(elem).data('doTemplate', item);
             dom.append(elem);
         });
 
+        // store DOM
         this.$dom = dom.children();
 
+        // keep chain
         return this;
     },
 
@@ -87,6 +91,8 @@ $.extend(doTemplate.prototype, {
 
         // we insert a clone, inc data,  so the same compiled template can be inserted multiple time
         $(selector)[type](this.$dom.clone(true));
+
+        // keep chain
         return this;
     }
 });

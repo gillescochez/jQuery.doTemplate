@@ -9,7 +9,7 @@ var doTemplate = function(config) {
 
         if (this.data && this.compiler) this.compile();
 
-        this.$dom = null;
+        this.$dom = undefined;
         
         return this;
     },
@@ -28,11 +28,11 @@ $.extend(doTemplate.prototype, {
         // sort the compiler out
         if (!this.compiler) this.compiler = $.doTemplate.engine(this.source);
 
-        var compiled = [],
+        var items = [],
             source = this.source,
             compiler = this.compiler,
             add = function(object) {
-                compiled.push({
+                items.push({
                     data: object,
                     source: source,
                     compiler: compiler,
@@ -51,7 +51,7 @@ $.extend(doTemplate.prototype, {
         else add(data);
        
         // store compiled version as jQuery object (so we can clone it on render)
-        this.compiled = compiled;
+        this.items = items;
 
         // reset the $dom cache
         this.$dom = null;
@@ -67,7 +67,7 @@ $.extend(doTemplate.prototype, {
         var dom = $(document.createElement('div'));
 
         // loop through compiled data
-        $.each(this.compiled, function(i, item) {
+        $.each(this.items, function(i, item) {
             var elem = $(item.compiled).get() || document.createTextNode(item.compiled);
             $(elem).data('doTemplate', item);
             dom.append(elem);
