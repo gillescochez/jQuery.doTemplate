@@ -2,7 +2,9 @@
 
 doTemplate is a jQuery template plugin build around the high performance [doT](#credits) template engine, which is where the name come from and, well, it clearly state what it does too :)
 
-It provides similar features than jQuery.tmpl but aims to provide a simplier API and similar performances.
+Compilation time is where doTemplate is excel, thanks to doT, the compilation results are stored as strings until they are requested to be converted to DOM (using [toDOM() method](#todom) or inserted into the dom (using the [rendering methods](#rendering-methods)).
+
+It provides similar features than jQuery.tmpl but aims to provide a simplier API and better performances (see [benchmarks](#benchmarks)).
 
 Best thing is to try it and make your own mind, hopefully there is enough below to help you get started :)
 
@@ -175,6 +177,8 @@ The encoding tag will encode its body so everything is render as it is inside th
 
 ```
 
+## Definition tag
+
 # Examples
 
 ## Using script tags to store templates
@@ -264,19 +268,28 @@ $.doTemplate('<p>${name} : ${age}</p>', data).appendTo('#list');
 ```
 # Benchmarks
 
+## Template compilation
+
 Benchmarks are made using benchmark.js and for the moment are quite simple.
 
-jQuery.templ and jQuery.doTemplate are both being tested with the template function cached so that the result analyse only
-the compiling data and insertion performance (using appendTo)
+jQuery.templ and jQuery.doTemplate are both being tested with the template function cached so only compilation time is tested.
 
-Only 3 template strings are test for now:
+Only 3 template are tested for now:
 
 * basic interpolation using the short tag
 * basic conditional statement
 * basic iteration
 
-The results varies depending on the platform and the browser used, in Linux jQuery.doTemplate is the winner, on Windows it really varies
-depending on the browser used. Here again the best thing is to run the benchmarks in the browser you use and see what you get.
+Due to doT and the fact that jQuery.doTemplate store compilation data in a simple array in all browsers tested so far jQuery.doTemplate is always the fastest.
+
+## Template appending
+
+Here as on first insert doTemplate will have to convert string to DOM jQuery.tmpl is expected to be a good competitor if not winner.
+
+## All in one
+
+From grabbing a template, building a template function, compiling data and inserting into the DOM, which is the fastest.
+
 
 # Credits
 

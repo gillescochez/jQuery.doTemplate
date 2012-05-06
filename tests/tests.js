@@ -1,29 +1,41 @@
-test('various', function() {
+test('Structure', function() {
 
-    var data = [
-        {name: 'Paul', age: 22},
-        {name: 'Edouard', age: 13},
-        {name: 'Jesus', age: 33},
-    ];
+    var defaults = {
+            shorttag:    /\$\{([^\}]*)\}/g,
+            evaluate:    /\{\{([\s\S]+?)\}\}/g,
+            interpolate: /\{\{=([\s\S]+?)\}\}/g,
+            encode:      /\{\{!([\s\S]+?)\}\}/g,
+            use:         /\{\{#([\s\S]+?)\}\}/g,
+            define:      /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
+            conditional: /\{\{\?(\?)?\s*([\s\S]*?)\s*\}\}/g,
+            iterate:     /\{\{~\s*(?:\}\}|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\}\})/g,
+            varname: null,
+            strip: true,
+            append: true,
+            selfcontained: false
+        };
 
-    ok($.doTemplate, 'exists');
+    // test properties / methods exists
+    ok($.doTemplate, '$.doTemplate');    
+    ok($.doTemplate._, '$.doTemplate._'); 
+    ok($.doTemplate.engine, '$.doTemplate.engine'); 
+    ok($.doTemplate.engine.settings, '$.doTemplate.engine.settings'); 
     
-    var templ = $('#listTemplate').doTemplate(data).appendTo('#list');
-
-    $('td.click').live('click', function() {
-        $('#itemTemplate').doTemplate(this).replace($(this).parent());
-    });
-
-    setTimeout(function() {
-            
-        templ.compile([
-            {name: 'Paulette', age: 69},
-            {name: 'Jean', age: 18},
-            {name: 'Turna', age: 17}
-        ]).appendTo('#list2');
-    
-    }, 500);
-
+    // check default doT settings are as expected
+    deepEqual($.doTemplate.engine.settings, defaults, 'doT settings');
 });
 
-$.doTemplate('${name}', {name:'foo'}).appendTo('body');
+test('Compilation', function() {
+
+    var dataObject = {name: 'Paul'},
+        dataArray = [
+            {name: 'Paul', age: 22},
+            {name: 'Edouard', age: 13},
+            {name: 'Jesus', age: 33}
+        ],
+        tags = {
+            short: '${name}',
+            long: '{{=name}}'
+        };
+
+});

@@ -8,22 +8,6 @@
 <script src="../src/core.js"></script>
 <script src="../src/engine.js"></script>
 <script src="../src/plugin.js"></script>
-<script type="text/doTemplate" id="listTemplate">
-    <tr>
-        <td class="click">${name}</td>
-        <td>${age}</td>
-        <td>${age >= 18 ? 'yes' : 'no'}</td>
-    </tr>
-</script>
-<script type="text/doTemplate" id="itemTemplate">
-    <tr>
-        <th colspan="3"><strong>{{= name }}</strong></th>
-    </tr>
-    <tr>
-        <th>Age</th>
-        <td colspan="2">{{= age }}</td>
-    </tr>
-</script>
 <body>
 <h1 id="qunit-header">Tests</h1>
 <h2 id="qunit-banner"></h2>
@@ -31,20 +15,6 @@
 <h2 id="qunit-userAgent"></h2>
 <ol id="qunit-tests"></ol>
 <div id="qunit-fixture">test markup, will be hidden</div>
-<h2>List 1</h2>
-<table>
-    <thead>
-        <tr><th>Name</th><th>Age</th><th>Adult</th></tr>
-    </thead>
-    <tbody id="list"></tbody>
-</table>
-<h2>List 2</h1>
-<table>
-    <thead>
-        <tr><th>Name</th><th>Age</th><th>Adult</th></tr>
-    </thead>
-    <tbody id="list2"></tbody>
-</table>
 <script src="tests.js"></script>
 </body>
 </html>
