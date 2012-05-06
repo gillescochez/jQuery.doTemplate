@@ -56,27 +56,34 @@ $.extend(doTemplate.prototype, {
        
         // store compiled version as jQuery object (so we can clone it on render)
         this.compiled = compiled;
+
+        // reset the $dom cache
+        this.$dom = null;
         
+        return this;
+    },
+
+    // convert compiled data into dom (jQuery)
+    toDom: function() {
+        
+        var dom = $(document.createElement('div'));
+
+        $.each(this.compiled, function(i, item) {
+            
+            var elem = $(item.compiled).get() || document.createTextNode(item.compiled);
+            $(elem).data('doTemplate', item);
+            dom.append(elem);
+        });
+
+        this.$dom = dom.children();
+
         return this;
     },
 
     render: function(selector, type) {
 
-        var dom;
-    
-        if (!this.$dom) {
-            
-            dom = $('<div />');
-
-            $.each(this.compiled, function(i, item) {
-                
-                var elem = $(item.compiled).get() || document.createTextNode(item.compiled);
-                $(elem).data('doTemplate', item);
-                dom.append(elem);
-            });
-
-            this.$dom = dom.children();
-        };
+        // convert compiled data to DOM if needed
+        if (!this.$dom) this.toDom();
 
         // we insert a clone, inc data,  so the same compiled template can be inserted multiple time
         $(selector)[type](this.$dom.clone(true));
@@ -85,8 +92,7 @@ $.extend(doTemplate.prototype, {
 });
 
 $.each({appendTo: 'append', prependTo: 'prepend', insertBefore: 'before', insertAfter: 'after', replace: 'replaceWith'}, function(method, type) {
-    doTemplate.prototype[method] = function(type) {
-        //var render = this.render;
+    doTemplate.prototype[method] = function(type) { 
         return function(selector) {
             return this.render(selector, type);
         };
@@ -153,14 +159,13 @@ $.doTemplate = function() {
     return new doTemplate(settings || {});        
 };
 
-// TODO Update so it can handle textNode too as used for pure text
+// TODO Update so it can handle textNode too (not nodeType 1)
 $.doTemplate._ = function(elem) {
 
     var obj;
 
-
     if (elem.jquery) elem = elem[0];
-    while (elem && elem.nodeType === 1 && !(obj = $.data(elem, 'doTemplate')) && (elem = elem.parentNode)) {};
+    while (elem && (elem.nodeType === 1 || elem.nodeType === 3) && !(obj = $.data(elem, 'doTemplate')) && (elem = elem.parentNode)) {};
     return obj || null;
 
 };
