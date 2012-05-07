@@ -6,7 +6,7 @@ $.fn.doTemplate = function(data, callback) {
 
         return $.doTemplate({
             source:$(this).html(),
-            data: $.doTemplate._(data).data
+            data: $.doTemplate.extract(data).data
         });
     };
 

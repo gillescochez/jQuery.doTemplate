@@ -107,7 +107,7 @@ $.doTemplate = function(source, data) {
     // if argument is jquery object or an element we use get to return a new template object
     if (source.jquery || source.nodeType) {
 
-        obj = $.doTemplate._(source);
+        obj = $.doTemplate.extract(source);
 
         config = {
             source: obj.source,
@@ -120,7 +120,7 @@ $.doTemplate = function(source, data) {
 
         if (data && (data.jquery || data.nodeType)) {
 
-            obj = $.doTemplate._(data);
+            obj = $.doTemplate.extract(data);
 
             config = {
                 source: source,
@@ -143,7 +143,7 @@ $.doTemplate = function(source, data) {
     return new doTemplate(config);        
 };
 
-$.doTemplate._ = function(elem) {
+$.doTemplate.extract = function(elem) {
 
     var obj;
 

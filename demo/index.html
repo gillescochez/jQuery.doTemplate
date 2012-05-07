@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<script src="../lib/jquery.js"></script>
+<!-- <script src="../dist/jquery.doTemplate.min.js"></script> -->
+<script src="../src/core.js"></script>
+<script src="../src/engine.js"></script>
+<script src="../src/plugin.js"></script>
+<style>
+div {
+    margin:20px;
+    padding:20px;
+}
+.parent {
+    border:1px solid #ccc;
+    background:#f4f4f4;
+    color:#333;
+}
+.parent:hover {
+    background:#ccc;
+    cursor:pointer;
+}
+.family {
+    border:5px solid red;
+    background:black;
+    color:white;
+    padding:10px;
+}
+</style>
+<body></body>
+<script>
+var data = [
+        {
+            name: 'Gilles',
+            age: 32,
+            children: [
+                {
+                    name: 'Lenny',
+                    age: 11
+                }, {
+                    name: 'Felix',
+                    age: 5
+                }, {
+                    name: 'Anais',
+                    age: 4
+                }
+            ]
+        }, {
+            name: 'James',
+            age: 100,
+            children: [
+                {
+                    name: 'Ayrton',
+                    age: 11
+                }
+            ]
+        }
+    ],
+    templates = {
+        default: '<div class="parent"><h1>${name}</h1><p>Age: ${age}</p></div>',
+        expanded: '<div class="family"><h1>${name}: ${age}</h1><p>Children:<br /><ul>{{~ children :child}}<li>${child.name} <em>${child.age}</em></li>{{~}}</ul></p></div>'
+    },
+    body = document.body;
+
+$.doTemplate(templates.default, data).appendTo(body);
+
+$(document).on('click', '.parent', function() {
+    $.doTemplate(templates.expanded, this).replace(this);
+});
+
+</script>
+</html>

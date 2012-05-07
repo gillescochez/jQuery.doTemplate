@@ -25,7 +25,7 @@ test('Structure', function() {
 
     // test properties / methods exists
     ok($.doTemplate, '$.doTemplate');    
-    ok($.doTemplate._, '$.doTemplate._'); 
+    ok($.doTemplate.extract, '$.doTemplate.extract'); 
     ok($.doTemplate.engine, '$.doTemplate.engine'); 
     ok($.doTemplate.engine.settings, '$.doTemplate.engine.settings'); 
     

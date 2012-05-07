@@ -57,8 +57,8 @@ for (var i in tests) {
 // doTemplate test
 suite.add('jQuery.doTemplate', function() {
 
-   doTemplate.compile(tests[test].data).appendTo(doTDiv);
-   //doTemplate.compile(tests[test].data);
+   //doTemplate.compile(tests[test].data).appendTo(doTDiv);
+   doTemplate.compile(tests[test].data);
 /*
 if (log) {
     console.log(doTDiv.innerHTML);
@@ -69,8 +69,8 @@ if (log) {
 
 // tmpl test
 .add('jQuery.tmpl', function() {
-    $.tmpl(test, tests[test].data).appendTo(tmplDiv);
-    //$.tmpl(test, tests[test].data);
+    //$.tmpl(test, tests[test].data).appendTo(tmplDiv);
+    $.tmpl(test, tests[test].data);
 })
 
 // display result when all test are done

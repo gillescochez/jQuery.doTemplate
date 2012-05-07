@@ -1,8 +1,10 @@
 # jQuery.doTemplate
 
-doTemplate is a jQuery template plugin build around the high performance [doT](#credits) template engine, which is where the name come from and, well, it clearly state what it does too :)
+doTemplate is a jQuery template plugin build around the high performance [doT](#credits) template engine, which is where the name come from and, well, it clearly state what it does do too :)
 
-Compilation time is where doTemplate is excel, thanks to doT, the compilation results are stored as strings until they are requested to be converted to DOM (using [toDOM() method](#todom) or inserted into the dom (using the [rendering methods](#rendering-methods)).
+Compilation time is where doTemplate is excel, thanks to doT, the compilation results are stored as strings until they are requested to be converted to DOM (using [toDOM() method](#todom) or inserted into the dom (using the [rendering methods](#rendering-methods)). This allows for better compilation time and more flexibility as you can access the compiled items through the template items property, convert it into a jQuery object and access it or simply use on of the rendering methods to rendering to the document.
+
+The template function is automatically cached and when items are converted to jQuery a data object is attached containing the source, data, compiler function and compiled string for the item being converted, this allow for creation of template based on existing data accessible in the DOM as well as based on an existing doTemplate instance.
 
 Best thing is to try it and make your own mind, hopefully there is enough below to help you get started :)
 
@@ -29,7 +31,6 @@ All template features are as provided by doT the only changes made are the suppo
 * [Installation](#installation)
 * [Template tags](#template-tags)
 * [Examples](#examples)
-* [Benchmarks](#benchmarks)
 * [Credits](#credits)
 
 # Builder API
@@ -97,6 +98,29 @@ You can update an already created template by using the compile method and passi
 
 var tmpl = $.doTemplate(templateString, data).appendTo('#target');
 tmpl.compile(newData).appendTo('#target2'); // append the newly compiled data to a new element
+
+```
+
+## extract method
+
+The extract method is a static method used internally to retrieved the doTemplate data object stored. It attemps to location the data object from the element going
+up the anscestry tree, this allows for an easy retrieval of the data object from any element inside a converted template item.
+
+```javascript
+
+// a is part of the DOM and was previsously rendered using doTemplate
+$('a').on('click', function(ev) {
+    ev.preventDefault();
+    var dataObject = $.doTemplate(this);
+    /*
+        dataObject = {
+            data, // data object used for item
+            source, // template source used for item
+            compiler, // compiler function used for item
+            compiled // compiled string of the item
+        };
+    */
+});
 
 ```
 
@@ -280,31 +304,6 @@ var data = [
 
 $.doTemplate('<p>${name} : ${age}</p>', data).appendTo('#list');	
 ```
-# Benchmarks
-
-## Template compilation
-
-Benchmarks are made using benchmark.js and for the moment are quite simple.
-
-jQuery.templ and jQuery.doTemplate are both being tested with the template function cached so only compilation time is tested.
-
-Only 3 template are tested for now:
-
-* basic interpolation using the short tag
-* basic conditional statement
-* basic iteration
-
-Due to doT and the fact that jQuery.doTemplate store compilation data in a simple array in all browsers tested so far jQuery.doTemplate is always the fastest.
-
-## Template appending
-
-Here as on first insert doTemplate will have to convert string to DOM jQuery.tmpl is expected to be a good competitor if not winner.
-
-## All in one
-
-From grabbing a template, building a template function, compiling data and inserting into the DOM, which is the fastest.
-
-
 # Credits
 
 The template engine is powered by [doT.js](http://olado.github.com/doT/), written by [Laura Doktorova](https://github.com/olado).
