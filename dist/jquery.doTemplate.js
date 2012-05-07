@@ -5,17 +5,19 @@
 // template object constructor
 var doTemplate = function(config) {
 
-    this.source = config.source;
-    this.data = config.data;
+    var self = this;
 
-    if (this.source) this.compiler = $.doTemplate.engine(this.source);
-    else this.compiled = null;
+    self.source = config.source;
+    self.data = config.data;
 
-    if (this.data && this.compiler) this.compile();
+    if (self.source) self.compiler = $.doTemplate.engine(self.source);
+    else self.items = null;
 
-    this.$dom = undefined;
+    if (self.data && self.compiler) self.compile();
+
+    self.$dom = undefined;
     
-    return this;
+    return self;
 };
         
 // add some inherited methods
@@ -77,7 +79,6 @@ doTemplate.prototype = {
 
         // store DOM
         this.$dom = $(frag); 
-
         // keep chain
         return this;
     },

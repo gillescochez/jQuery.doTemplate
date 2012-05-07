@@ -59,12 +59,12 @@ suite.add('jQuery.doTemplate', function() {
 
    doTemplate.compile(tests[test].data).appendTo(doTDiv);
    //doTemplate.compile(tests[test].data);
-
+/*
 if (log) {
     console.log(doTDiv.innerHTML);
     log = false;
 };
-
+*/
 })
 
 // tmpl test
