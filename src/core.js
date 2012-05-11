@@ -74,7 +74,8 @@ doTemplate.prototype = {
         });
 
         // store DOM
-        this.$dom = $(frag); 
+        this.$dom = $(frag);
+
         // keep chain
         return this;
     },

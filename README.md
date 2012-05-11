@@ -215,7 +215,32 @@ The encoding tag will encode its body so everything is render as it is inside th
 
 ```
 
-## Definition tag
+## Define and Use tags
+
+### Define and use/reuse snippets
+
+```
+
+{{##def.snippet1:
+    Some snippet that will be included {{#def.a}} later {{=it.f1}}
+#}}
+
+
+{{#def.snippet1}}
+
+```
+
+### Define and use functions in your templates
+
+```
+{{##def.fntest = function() {
+    return "Function test worked!";
+}
+#}}
+
+{{#def.fntest()}}
+
+```
 
 # Examples
 
